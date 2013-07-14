@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% import wtforms %}
+
+{% block title %}New 3D RFP{% end %}
+
+
+{% block notice %}
+<script type="text/javascript">
+alert("{{ message }}");
+</script>
+{% end %}
+
+{% block content %}
+
+<form enctype="multipart/form-data" action="{% raw request.uri %}" method="post" accept-charset="utf-8">
+{% for field in form %}
+  <fieldset>
+    <div class="control-group">
+    {% raw field.label %}
+    {% for error in field.errors %}
+      <div>{% raw error %} </div>
+    {% end %}
+    <div class="controls">
+      {% raw field() %}
+    </div>
+    </div>
+  </fieldset>
+{% end %}
+
+<div>File: <input type="file" name="file1" /></div>
+
+  <div><input type="submit" name="New RFP"/></div>
+</form>
+{% end %}
+
+
