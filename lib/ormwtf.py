@@ -62,8 +62,8 @@ class ModelConverter(object):
         from pprint import pprint
         #pprint(vars(field))
         kwargs = {
-            'label': getattr(field, 'form_name', field_name),
-            'description': '',
+            'label': getattr(field, 'serialized_name', field_name),
+            'description': '' , 
             'validators': [],
             'filters': [],
             'default': field.default,
