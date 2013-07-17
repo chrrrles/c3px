@@ -5,17 +5,24 @@ from lib.ormwtf import model_form
 from schemas import RfpModel,BuyerModel
 from lib import skein
     
+class Data:
+  pass
+
 class RfpHandler(RequestHandler):
   def _args(self):
     { k: self.get_argument(k) for k in self.request.arguments }
 
   def get(self):
     obj = RfpModel()
-    RfpForm = model_form(obj)
-    self.render( 't/rfp.html',message = "New form", form = RfpForm()) 
+    form = model_form(obj)
+    data = Data
+    data.form = form()
+    data.message = "New Form"
+    self.render( 'templates/rfp.html',_d=data) 
 
   @tornado.web.asynchronous
   def post(self):
+    _d = Data()
     rfps = self.settings['db']['rfps']
     args ={ k: self.get_argument(k) for k in self.request.arguments } 
     print "self.request.arguments: %s" % args     
@@ -24,12 +31,14 @@ class RfpHandler(RequestHandler):
     form = model_form(obj)()
     print "form.email: %s " % form.email 
     if not form.validate():
-      self.render( 't/rfp.html', message="Errors!", form=form)
+      _d.form = form
+      self.render( 'templates/rfp.html', _d=_d)
     else: 
       try:
         file1 = self.request.files['file1'][0]
       except KeyError:
-        self.render( 't/rfp.html', message="Please upload a file!", form=form)
+        _d.form = form
+        self.render( 'templates/rfp.html', _d =_d )
       original_fname = file1['filename']
       #if original_fname.split('.')[-1].lower() != "stl"
       extension = os.path.splitext(original_fname)[1]
