@@ -4,34 +4,29 @@
 
 {% block title %}New 3D RFP{% end %}
 
+{% block style %}
+{% end %}
 
-{% block notice %}
+
+{% if has_attr(_d,'message') %}
+  {% block notice %}
 <script type="text/javascript">
-alert("{{ message }}");
+  alert("{{ _d.message }}");
 </script>
+  {% end %}
 {% end %}
 
 {% block content %}
+<div class="container">
+  <div class="span8 offset2">
+    <a data-toggle="modal" href="#rfpform-modal">Create an RFP</a>
+  </div>
+    {% module RfpForm(form=_d.form) %}
 
-<form enctype="multipart/form-data" action="{% raw request.uri %}" method="post" accept-charset="utf-8">
-{% for field in form %}
-  <fieldset>
-    <div class="control-group">
-    {% raw field.label %}
-    {% for error in field.errors %}
-      <div>{% raw error %} </div>
-    {% end %}
-    <div class="controls">
-      {% raw field() %}
-    </div>
-    </div>
-  </fieldset>
+</div>
 {% end %}
 
-<div>File: <input type="file" name="file1" /></div>
-
-  <div><input type="submit" name="New RFP"/></div>
-</form>
+{% block script %}
 {% end %}
 
 

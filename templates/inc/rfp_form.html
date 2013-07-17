@@ -1,58 +1,78 @@
-
 <div id="rfpform-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form class="form-horizontal well" data-async data-target="#rfpform-modal" action="{% raw request.uri %}" method="POST">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>Create an RFP</h3>
   </div>
 
-  <div class="modal-body">
-    <form class="form-horizontal well" data-async data-target="#rfpform-modal" action="{% raw request.uri %}" method="POST">
+  <div class="modal-body" id="rfp_form">
 
-      <fieldset >
-        <legend >Upload a File</legend>
-        <label>File:</label>
-        <input type="file" name="file1" />
+      <fieldset class="collapsible">
+        <legend >Step 1: Upload a File </legend>
+        <input id="fileupload" type="file" name="file_id"/>
       </fieldset>
 
-      <fieldset>
-        <legend>Contact Information</legend>
+      <fieldset class="collapsible ">
+        <legend>Step 2: Contact Information</legend>
         <div class="control-group">
-          {% raw form.email.label(class_="control-label") %} :  {% raw form.email(placeholder=form.email.label.text) %}
+          {% raw form.email.label(class_="control-label") %} 
+          <div class="controls">
+            {% raw form.email(placeholder=form.email.label.text) %}
+          </div>
         </div>
         <div class="control-group">
-          {% raw form.firstname.label(class_="control-label") %} :  {% raw form.firstname(placeholder=form.firstname.label.text) %}
+          {% raw form.firstname.label(class_="control-label") %} 
+          <div class="controls">
+            {% raw form.firstname(placeholder=form.firstname.label.text) %}
+          </div>
         </div>
         <div class="control-group">
-          {% raw form.lastname.label(class_="control-label") %} :  {% raw form.lastname(placeholder=form.lastname.label.text) %}
+          {% raw form.lastname.label(class_="control-label") %} 
+          <div class="controls">
+           {% raw form.lastname(placeholder=form.lastname.label.text) %}
+          </div>
         </div>
       </fieldset>
-      <fieldset>
-        <legend>Delivery Information</legend>
+      <fieldset class="collapsible">
+        <legend>Step 3: Delivery Information</legend>
         <div class="control-group">
-          {% raw form.street1.label(class_="control-label") %} :  {% raw form.street1(placeholder=form.street1.label.text) %}
+          <label class="control-label" for="street1">Address</label>
+          <div class="controls">
+            {% raw form.street1(placeholder=form.street1.label.text) %}
+            {% raw form.street2(placeholder=form.street2.label.text) %}
+          </div>
         </div>
         <div class="control-group">
-          {% raw form.street2.label(class_="control-label") %} :  {% raw form.street2(placeholder=form.street2.label.text) %}
+          {% raw form.city.label(class_="control-label") %} 
+          <div class="controls">
+            {% raw form.city(placeholder=form.city.label.text) %}
+          </div>
         </div>
         <div class="control-group">
-          {% raw form.city.label(class_="control-label") %} :  {% raw form.city(placeholder=form.city.label.text) %}
+          {% raw form.state.label(class_="control-label") %} 
+          <div class="controls">
+            {% raw form.state(placeholder=form.state.label.text) %}
+          </div>
         </div>
         <div class="control-group">
-          {% raw form.state.label(class_="control-label") %} :  {% raw form.state(placeholder=form.state.label.text) %}
+          {% raw form.postal_code.label(class_="control-label") %} 
+          <div class="controls">
+            {% raw form.postal_code(placeholder=form.postal_code.label.text) %}
+          </div>
         </div>
         <div class="control-group">
-          {% raw form.postal_code.label(class_="control-label") %} :  {% raw form.postal_code(placeholder=form.postal_code.label.text) %}
-        </div>
-        <div class="control-group">
-          {% raw form.country.label(class_="control-label") %} :  {% raw form.country() %}
+          {% raw form.country.label(class_="control-label") %} 
+          <div class="controls">
+            {% raw form.country() %}
+          </div>
         </div>
       </fieldset>
 
-    </form>
   </div>
  
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button class="btn btn-primary">Save changes</button>
+    <input type="submit" class="btn btn-primary" name="Submit RFP">
   </div>
+    </form>
 </div>

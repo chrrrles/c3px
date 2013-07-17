@@ -5,17 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+{% block style %}
+{% end %}
   </head>
   <body>
-    <div class="container">
 {% block notice %}
 {% end %}
 
-    {% block content %}
-      <h1>3dRfp</h1>
-    {% end %}
+{% block content %}
+    <div class="container">
+      <h1>c3px</h1>  
     </div>
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+{% end %}
+
+<script src="/static/js/jquery-2.0.3.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+{% block script %}{% end %}
   </body>
 </html>
