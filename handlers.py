@@ -8,6 +8,8 @@ from lib import skein
 class Data:
   pass
 
+# Images + STL files 
+
 class RfpHandler(RequestHandler):
   def _args(self):
     { k: self.get_argument(k) for k in self.request.arguments }
@@ -24,12 +26,10 @@ class RfpHandler(RequestHandler):
   def post(self):
     _d = Data()
     rfps = self.settings['db']['rfps']
-    args ={ k: self.get_argument(k) for k in self.request.arguments } 
+    args = { k: self.get_argument(k) for k in self.request.arguments } 
     print "self.request.arguments: %s" % args     
     obj = RfpModel(args)
-    print "obj.email: %s " % obj.email 
     form = model_form(obj)()
-    print "form.email: %s " % form.email 
     if not form.validate():
       _d.form = form
       self.render( 'templates/rfp.html', _d=_d)
