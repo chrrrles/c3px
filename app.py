@@ -1,11 +1,12 @@
 import tornado.web, tornado.ioloop, tornado.httpserver
 import tornado.template as template
-from handlers import RfpHandler
 import motor
 import os
-import uimodules
 
-static_path =os.path.join(os.getcwd(), 'lib/static')
+from app import uimodules
+from app.handlers import RfpHandler
+
+static_path =os.path.join(os.getcwd(), 'app/lib/static')
 debug=True,
 routes = [ 
   ('/',RfpHandler), 

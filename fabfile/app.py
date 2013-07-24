@@ -23,7 +23,7 @@ def install():
     run ('git clone git@github.com:chrrrles/c3px.git 3drfp')
   
   with cd('/web/3drfp') and settings(user='c3px'):
-    run ('virtualenv venv')
+    run ('virtualenv ./venv')
     run ('./venv/bin/pip install -r requirements.txt')
     run ('nohup ./venv/bin/python app.py &')
 
