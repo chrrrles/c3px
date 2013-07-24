@@ -6,8 +6,11 @@ import string
 
 def ensure():
   if is_installed():
+    puts ("Mongodb already installed...")
     return
+  puts ("Installing Mongodb")
   install()
+    
 
 def is_installed():
   # probably a better test exists

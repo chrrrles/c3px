@@ -7,7 +7,9 @@ vagrant_init = 'vagrant init precise64 http://ergonlogic.com/files/boxes/debian-
 
 def ensure():
   if not installed():
+    puts ("Installing Vagrant...")
     install()
+  puts "Vagrant already installed"
   local('vagrant up')
 
 

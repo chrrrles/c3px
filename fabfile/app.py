@@ -7,15 +7,17 @@ from . import (mongodb, python)
 
 def ensure():
   if is_installed():
+    puts ("App is already installed")  
     return
-  python.ensure()
-  mongodb.ensure()
+  puts ("Installing App and dependencies...")
   install()
 
 def is_installed():
   return dir_exists('/web/3drfp')
 
 def install():
+  python.ensure()
+  mongodb.ensure()
   user_setup()
   package_ensure('git')
 
