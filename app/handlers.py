@@ -1,16 +1,68 @@
 import os,random,string
 import tornado.web
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, asynchronous
+import tornado.gen as gen
 from lib.ormwtf import model_form
 from schemas import RfpModel,BuyerModel
 from lib import skein
+import uuid
     
+# the object we pass to the templates/views
 class Data:
   pass
 
 # Images + STL files 
 
-class RfpHandler(RequestHandler):
+class AppHandler(RequestHandler):
+  def db(self):
+    return self.settings['db']
+
+  def upload_dir(self):
+    return self.settings['upload_dir']
+       
+
+class UploadHandler(AppHandler):
+
+  def prepare(self):
+    if self.request.files is not None:
+      for o in self.request.files:
+        if len(self.request.files[o]) > 0:
+          self.file = self.request.files[o][0]
+          break
+    if self.file is None:
+      self.send_error(400)
+      return
+
+  #[XXX] Need to store files in GridFS... and also use the library, not calling scripts
+  @asynchronous
+  @gen.coroutine
+  def post(self):
+    print self.file.filename, self.file.content_type, len(self.file.body)  
+    name = uuid.uuid4().__str__()
+    size = len(self.file.body)
+    path = os.path.join (self.upload_dir, name)
+    try:
+      f = open(path,'w')
+      f.write(self.file.body)
+    except:
+      self.write_error(1, err="Error Saving File!")
+    else:
+      files = self.db['files']
+      obj = FileModel()
+      obj.name = self.file.filename
+      obj.size = size
+      obj.content_type= self.file.content_type
+      obj.path = path
+      files.insert(obj.serialize(), callback = "_on_response")
+
+  def _on_response(self, result, error):
+    if error:
+      raise tornado.web.HTTPError(500, error)
+    else:
+      self.write(result)
+    
+
+class RfpHandler(AppHandler):
   def _args(self):
     { k: self.get_argument(k) for k in self.request.arguments }
 
@@ -22,10 +74,10 @@ class RfpHandler(RequestHandler):
     data.message = "New Form"
     self.render( 'templates/rfp.html',_d=data) 
 
-  @tornado.web.asynchronous
+  @asynchronous
   def post(self):
     _d = Data()
-    rfps = self.settings['db']['rfps']
+    rfps = self.db['rfps']
     args = { k: self.get_argument(k) for k in self.request.arguments } 
     print "self.request.arguments: %s" % args     
     obj = RfpModel(args)
