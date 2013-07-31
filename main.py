@@ -15,7 +15,7 @@ routes = [
 db = MotorClient().open_sync().c3px
 
 
-application = tornado.web.Application(routes,db = db,ui_modules=uimodules, debug=debug) 
+application = tornado.web.Application(routes,db = db,ui_modules=uimodules, debug=debug, upload_dir="uploads") 
 if __name__ == "__main__":
   tornado.httpserver.HTTPServer(application).listen(8888)
   tornado.ioloop.IOLoop.instance().start()

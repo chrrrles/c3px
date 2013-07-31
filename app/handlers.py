@@ -3,7 +3,7 @@ import tornado.web
 from tornado.web import RequestHandler, asynchronous
 import tornado.gen as gen
 from lib.ormwtf import model_form
-from schemas import RfpModel,BuyerModel
+from schemas import RfpModel,BuyerModel,FileModel
 from lib import skein
 import uuid
     
@@ -14,8 +14,8 @@ class Data:
 # Images + STL files 
 
 class AppHandler(RequestHandler):
-  def db(self):
-    return self.settings['db']
+  def initialize(self):
+    self.db = self.settings['db']
 
   def upload_dir(self):
     return self.settings['upload_dir']
@@ -37,29 +37,25 @@ class UploadHandler(AppHandler):
   @asynchronous
   @gen.coroutine
   def post(self):
-    print self.file.filename, self.file.content_type, len(self.file.body)  
     name = uuid.uuid4().__str__()
     size = len(self.file.body)
-    path = os.path.join (self.upload_dir, name)
+    path = os.path.join (self.upload_dir(), name)
     try:
       f = open(path,'w')
-      f.write(self.file.body)
+      result = yield f.write(self.file.body)
     except:
       self.write_error(1, err="Error Saving File!")
     else:
-      files = self.db['files']
-      obj = FileModel()
-      obj.name = self.file.filename
-      obj.size = size
-      obj.content_type= self.file.content_type
-      obj.path = path
-      files.insert(obj.serialize(), callback = "_on_response")
-
-  def _on_response(self, result, error):
-    if error:
-      raise tornado.web.HTTPError(500, error)
-    else:
+      doc = {
+        'filename' : self.file.filename,
+        'size' : len(self.file.body),
+        'content_type' : self.file.content_type,
+        'path' : name }
+      #obj = FileModel(props)
+      result =  self.db.files.insert(doc, manipulate=True)
+      print result
       self.write(result)
+
     
 
 class RfpHandler(AppHandler):
@@ -68,7 +64,7 @@ class RfpHandler(AppHandler):
 
   def get(self):
     obj = RfpModel()
-    form = model_form(obj)
+    form = model_form(obj, exclude=['files'])
     data = Data
     data.form = form()
     data.message = "New Form"
@@ -77,7 +73,6 @@ class RfpHandler(AppHandler):
   @asynchronous
   def post(self):
     _d = Data()
-    rfps = self.db['rfps']
     args = { k: self.get_argument(k) for k in self.request.arguments } 
     print "self.request.arguments: %s" % args     
     obj = RfpModel(args)
@@ -99,7 +94,7 @@ class RfpHandler(AppHandler):
       output_file = open("uploads/" + final_filename, 'w')
       output_file.write(file1['body'])
       obj.final_filename = final_filename
-      rfps.insert(obj.serialize(),callback="_on_response")
+      self.db.rfps.insert(obj.serialize(),callback="_on_response")
 
   def _on_response(self, result, error):
     if error:
