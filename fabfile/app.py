@@ -18,11 +18,14 @@ def is_installed():
 def install():
   python.ensure()
   mongodb.ensure()
+  fossil.ensure()
   user_setup()
   package_ensure('git')
 
-  with cd('/web') and settings(user='c3px'):
-    run ('git clone git@github.com:chrrrles/c3px.git 3drfp')
+  dir_ensure('/web/3drfp', owner='c3px')
+  with cd('/web/3drfp') and settings(user='c3px'):
+    run ('fossil open /home/fossil/repos/c3px.fossil')
+    #run ('git clone git@github.com:chrrrles/c3px.git 3drfp')
   
   with cd('/web/3drfp') and settings(user='c3px'):
     run ('virtualenv ./venv')

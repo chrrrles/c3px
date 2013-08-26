@@ -9,14 +9,14 @@ def ensure():
   if not installed():
     puts ("Installing Vagrant...")
     install()
-  puts "Vagrant already installed"
+  puts ("Vagrant already installed")
   local('vagrant up')
 
 
 def installed():
   result =  local('vagrant status',capture=True)
   if result.find('not created') > 0:
-    return false
+    return False
   return True
 
 def install():
