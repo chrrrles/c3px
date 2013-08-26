@@ -3,7 +3,7 @@ from fabric.api import *
 from fabric.contrib.console import confirm
 from fabric.context_managers import *
 
-from . import (mongodb, python)
+from . import (mongodb, python, fossil)
 
 def ensure():
   if is_installed():
