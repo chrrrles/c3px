@@ -12,7 +12,7 @@ def ensure():
     install()
 
 def is_installed():
-  file_exists("/home/fossil/repos/c3px.fossil")
+  return file_exists("/home/fossil/repos/c3px.fossil")
 
 def write_xinetd():
   file_write("/etc/xinetd.d/fossil", text_strip_margin(
