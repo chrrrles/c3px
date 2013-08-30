@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}New 3D RFP{% end %}
+{% block jumbotron %}
+<div class="jumbotron subhead">
+  <div class="container">
+    <h1>Current RFPs on 3DRFP.com</h1>
+    <p>The current list of {% if handler.current_user %}public{% end %} RFPs on 3DRFP.com.  Sign up as a builder if you have what it takes to make these real.</p>
+  </div>
+</div>
+{% end %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="span8 offset2">
+    <h2>A List of RFPs</h2>
+    </div>
+  </div>
+</div>
+{% end %}
+
+

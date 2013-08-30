@@ -4,7 +4,7 @@ from  motor import MotorClient
 import os
 
 from app import uimodules
-from app.handlers import RfpHandler, UploadHandler, HomeHandler
+from app.handlers import *
 
 cwd = os.getcwd()
 static_path =os.path.join(cwd, 'app/lib/static')
@@ -12,7 +12,10 @@ template_path = os.path.join(cwd, "app/templates")
 debug=True,
 routes = [ 
   ('/',HomeHandler), 
-  ('/create',RfpHandler), 
+  ('/about', AboutHandler), 
+  ('/rfps', RfpHandler), 
+  ('/builders', BuilderHandler), 
+  ('/create', CreateRfpHandler), 
   ('/upload/', UploadHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
 db = MotorClient().open_sync().c3px

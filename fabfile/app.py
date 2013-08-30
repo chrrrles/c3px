@@ -30,7 +30,7 @@ def install():
   with cd('/web/3drfp'), settings(user='c3px'):
     run ('virtualenv ./venv')
     run ('./venv/bin/pip install -r requirements.txt')
-    run (' nohup ./venv/bin/python app.py &')
+    run (' nohup ./venv/bin/python main.py &')
 
 # [XXX] oops - i still manually set up my public key
 # need to set up user.py  to set up the c3px user properly
@@ -42,7 +42,7 @@ def user_setup():
 def deploy(): 
   ensure()
   with cd('/web/3drfp'), settings(user='c3px'):
-    run ('fossil pull')
+    run ('fossil update')
     run ('./venv/bin/pip install -r requirements.txt')
-    run ('killall python') # man this is dangerous, but wehey YOLO!
-    run ('nohup ./venv/bin/python app.py &')
+    run ('killall python', warn_only=True) # man this is dangerous, but wehey YOLO!
+    run ('nohup ./venv/bin/python main.py &')
