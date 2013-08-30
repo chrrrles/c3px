@@ -38,3 +38,11 @@ def user_setup():
   user_ensure('c3px',home="/web")
   with mode_sudo():
     dir_ensure('/web', owner='c3px', group='c3px')
+
+def deploy(): 
+  ensure()
+  with cd('/web/3drfp') and settings(user='c3px'):
+    run ('fossil sync')
+    run ('./venv/bin/pip install -r requirements.txt')
+    run ('killall python') # man this is dangerous, but wehey!
+    run ('nohup ./venv/bin/python app.py &')
