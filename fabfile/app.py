@@ -21,16 +21,16 @@ def install():
   fossil.ensure()
   user_setup()
   package_ensure('git')
-
   dir_ensure('/web/3drfp', owner='c3px')
-  with cd('/web/3drfp') and settings(user='c3px'):
+
+  with cd('/web/3drfp/'), settings(user='c3px'):
     run ('fossil open /home/fossil/repos/c3px.fossil')
     #run ('git clone git@github.com:chrrrles/c3px.git 3drfp')
   
-  with cd('/web/3drfp') and settings(user='c3px'):
+  with cd('/web/3drfp'), settings(user='c3px'):
     run ('virtualenv ./venv')
     run ('./venv/bin/pip install -r requirements.txt')
-    run ('nohup ./venv/bin/python app.py &')
+    run (' nohup ./venv/bin/python app.py &')
 
 # [XXX] oops - i still manually set up my public key
 # need to set up user.py  to set up the c3px user properly
@@ -41,8 +41,8 @@ def user_setup():
 
 def deploy(): 
   ensure()
-  with cd('/web/3drfp') and settings(user='c3px'):
-    run ('fossil sync')
+  with cd('/web/3drfp'), settings(user='c3px'):
+    run ('fossil pull')
     run ('./venv/bin/pip install -r requirements.txt')
-    run ('killall python') # man this is dangerous, but wehey!
+    run ('killall python') # man this is dangerous, but wehey YOLO!
     run ('nohup ./venv/bin/python app.py &')
