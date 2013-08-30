@@ -2,28 +2,11 @@ from schematics.models import Model
 from schematics.types import StringType,EmailType, IntType
 from schematics.types.compound import ListType, ModelType
 from schematics.exceptions  import ValidationError
+from file import FileModel
 
 #from lib.cc import country_codes
 country_codes = {'US': 'USA',
   'CA': 'Canada'}
-
-
-class TestModel(Model): 
-  content = StringType()
-
-class FileModel(Model):
-  name = StringType()
-  name.serialized_name = "File Name"
-
-  size = IntType()  
-  size.serialized_name = "File Size"
-
-  content_type = StringType()
-  content_type.serialized_name = "File Type"
-
-  path = StringType()
-  path.serialized_name =  "File Path"
-
 
 class RfpModel(Model):
   email = EmailType ( required=True) 
@@ -62,14 +45,3 @@ class RfpModel(Model):
   country.serialized_name = "Country"
   
   files = ListType(ModelType(FileModel))
-
-
-class BuyerModel(Model):
-  email = StringType ( required=True) 
-  firstname = StringType ( required=True)
-  lastname = StringType ( required=True)
-  street1 = StringType (required=True)  
-  street2 = StringType ()
-  city = StringType ( required=True)
-  state = StringType ( required=True)
-  country = StringType ( required=True,default="US")
