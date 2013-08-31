@@ -1,0 +1,18 @@
+          <div class="control-group">
+            {% raw contact.firstname.label(class_="control-label") %}
+            <div class="controls">
+              {% raw contact.firstname(placeholder=contact.firstname.label.text) %}
+            </div>
+          </div>
+          <div class="control-group">
+            {% raw contact.lastname.label(class_="control-label") %}
+            <div class="controls">
+              {% raw contact.lastname(placeholder=contact.lastname.label.text) %}
+            </div>
+          </div>
+          <div class="control-group">
+            {% raw contact.email.label(class_="control-label") %}
+            <div class="controls">
+              {% raw contact.email(placeholder=contact.email.label.text) %}
+            </div>
+          </div>

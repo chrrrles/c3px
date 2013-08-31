@@ -12,7 +12,21 @@
 <div class="container">
   <div class="row">
     <div class="span8 offset2">
-      <h2>Register as a builder</h1>
+      <h2>Register as a Builder</h1>
+      <form class="horizontal well" action="{% raw request.uri %}" method="POST">
+        <fieldset>
+          <legend>{% raw form.contact.label.text %}</legend>
+          {% module ContactFormModule (form.contact) %}
+        </fieldset>
+        <fieldset>
+          <legend>{% raw form.billing_details.label.text %}</legend>
+          {% module BillingDetailsFormModule (form.billing_details) %}
+        </fieldset>
+        <fieldset>
+          <legend>{% raw form.address.label.text %}</legend>
+          {% module AddressFormModule( form.address ) %}
+        </fieldset>
+      </form>
     </div>
   </div>
 </div>
