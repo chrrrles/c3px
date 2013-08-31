@@ -191,7 +191,7 @@ class ModelConverter(object):
     @converts('ListType')
     def conv_List(self, model, field, kwargs):
         if isinstance(field.field, ReferenceField):
-            return ModelSelectMultipleField(model=field.field.document_type, **kwargs)
+            return ModelSelectMultipleField(model=field.field.model_class, **kwargs)
         if field.field.choices:
             kwargs['multiple'] = True
             return self.convert(model, field.field, kwargs)
@@ -218,12 +218,12 @@ class ModelConverter(object):
             'validators': [],
             'filters': [],
         }
-        form_class = model_form(field.document_type_obj, field_args={})
+        form_class = model_form(field.model_class, field_args={})
         return f.FormField(form_class, **kwargs)
 
     @converts('ReferenceField')
     def conv_Reference(self, model, field, kwargs):
-        return ModelSelectField(model=field.document_type, **kwargs)
+        return ModelSelectField(model=field.model_class, **kwargs)
 
     @converts('GenericReferenceField')
     def conv_GenericReference(self, model, field, kwargs):

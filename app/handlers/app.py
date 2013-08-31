@@ -1,7 +1,6 @@
 # again, so we can just do `from app import *`
 from tornado.web import RequestHandler
-from .. schemas.rfp import RfpModel
-from .. schemas.file import FileModel
+from .. models import *
 import tornado.web
 from tornado.web import asynchronous
 from .. lib.ormwtf import model_form

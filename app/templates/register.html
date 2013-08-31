@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% import wtforms %}
+{% block title %}Register as a Builder{% end %}
+{% block jumbotron %}
+<div class="jumbotron subhead">
+  <div class="container">
+    <h1>Sign Up to Create RFPs </h1>
+    <p>After signing up you can send your build requests the community of Makers on 3DRFP.com </p>
+  </div>
+</div>
+{% end %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="span8 offset2">
+      <h2>Register as a Buyer</h1>
+      <form class="horizontal well" action="{% raw request.uri %}" method="POST">
+        <fieldset>
+          <legend>Contact Information</legend>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{% end %}
+
+

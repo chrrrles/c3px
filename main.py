@@ -13,6 +13,7 @@ debug=True,
 routes = [ 
   ('/',HomeHandler), 
   ('/about', AboutHandler), 
+  ('/register', RegisterHandler), 
   ('/rfps', RfpHandler), 
   ('/builders', BuilderHandler), 
   ('/create', CreateRfpHandler), 

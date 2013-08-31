@@ -3,5 +3,6 @@ from create_rfp import CreateRfpHandler
 from upload import UploadHandler
 from home import HomeHandler
 from home import AboutHandler
+from register import RegisterHandler
 from builder import BuilderHandler
 from rfp import RfpHandler
