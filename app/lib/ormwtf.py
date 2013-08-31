@@ -60,7 +60,6 @@ class ModelConverter(object):
 
     def convert(self, model, field, field_name, field_args, hidden=False):
         from pprint import pprint
-        #pprint(vars(field))
         kwargs = {
             'label': getattr(field, 'serialized_name', field_name),
             'description': '' , 
@@ -72,6 +71,7 @@ class ModelConverter(object):
         if hidden:
            kwargs['widget'] = HiddenInput()
 
+        # no dashes in field_name
         if model._data[field_name]:
            kwargs['default'] = model._data[field_name]
 

@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% import wtforms %}
 {% block title %}Register as a Builder{% end %}
 {% block jumbotron %}
 <div class="jumbotron subhead">
@@ -18,8 +17,10 @@
         <fieldset>
           <legend>Contact Information</legend>
           {% module ContactFormModule( form.contact ) %}
+
           <legend>Billing Address</legend>
           {% module AddressFormModule( form.billing_address ) %}
+
           <legend>Delivery Address</legend>
           {% module AddressFormModule( form.delivery_address ) %}
 

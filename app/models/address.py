@@ -14,7 +14,7 @@ class AddressModel(Model):
   state = StringType ( required=True)
   state.serialized_name = "State"
   state.max_length="2"
-  country = StringType ( required=True,default="US")
+  country = StringType (required=True,default="US")
   country.serialized_name = "Country Code"
   country.max_length = 2
   zipcode = StringType(required=True)
