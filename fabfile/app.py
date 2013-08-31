@@ -39,7 +39,7 @@ def user_setup():
   with mode_sudo():
     dir_ensure('/web', owner='c3px', group='c3px')
 
-def deploy(): 
+def deploy(refresh): 
   ensure()
   with cd('/web/3drfp'), settings(user='c3px'):
     run ('fossil update')

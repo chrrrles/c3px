@@ -13,12 +13,7 @@ def v():
   env.port = 2222
   env.key_filename = 'secrets/vagrant.rsa' 
 
-def deploy():
-  app.deploy()
-
-def push(refresh=False):
+def deploy(refresh=False):
   app.deploy(refresh)
 
-def python_ensure():
-  python.ensure()
 
