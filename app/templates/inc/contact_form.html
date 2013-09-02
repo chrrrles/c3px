@@ -1,0 +1,21 @@
+          <div class="control-group {% if contact.firstname.errors %}error {%end%}">
+            {% raw contact.firstname.label(class_="control-label") %}
+            <div class="controls">
+              {% raw contact.firstname(placeholder=contact.firstname.label.text) %}
+              {% if contact.firstname.errors %}<span class="help-inline">{% raw contact.firstname.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if contact.lastname.errors %}error {%end%}">
+            {% raw contact.lastname.label(class_="control-label") %}
+            <div class="controls">
+              {% raw contact.lastname(placeholder=contact.lastname.label.text) %}
+              {% if contact.lastname.errors %}<span class="help-inline">{% raw contact.lastname.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if contact.email.errors %}error {%end%}">
+            {% raw contact.email.label(class_="control-label") %}
+            <div class="controls">
+              {% raw contact.email(placeholder=contact.email.label.text) %}
+              {% if contact.email.errors %}<span class="help-inline">{% raw contact.email.errors[0] %}</span> {% end %}
+            </div>
+          </div>

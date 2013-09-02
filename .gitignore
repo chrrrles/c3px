@@ -1,3 +1,8 @@
+=======
+# vim litter
+*.swp 
+
+
 *.py[cod]
 
 # C extensions
@@ -33,3 +38,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+
+#virtualenv
+venv

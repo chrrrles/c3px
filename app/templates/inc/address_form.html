@@ -1,0 +1,42 @@
+          <div class="control-group {% if address.street1.errors %}error {%end%}">
+            {% raw address.street1.label(class_="control-label") %} 
+            <div class="controls">
+              {% raw address.street1(placeholder=address.street1.label.text) %}
+              {% if address.street1.errors %}<span class="help-inline">{% raw address.street1.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if address.street2.errors %}error {%end%}">
+            {% raw address.street2.label(class_="control-label") %} 
+            <div class="controls">
+              {% raw address.street2(placeholder=address.street1.label.text) %}
+              {% if address.street2.errors %}<span class="help-inline">{% raw address.street2.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if address.city.errors %}error {%end%}">
+            {% raw address.city.label(class_="control-label") %} 
+            <div class="controls">
+              {% raw address.city(placeholder=address.city.label.text) %}
+              {% if address.city.errors %}<span class="help-inline">{% raw address.city.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if address.state.errors %}error {%end%}">
+            {% raw address.state.label(class_="control-label") %} 
+            <div class="controls">
+              {% raw address.state(placeholder=address.state.label.text) %}
+              {% if address.state.errors %}<span class="help-inline">{% raw address.state.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if address.country.errors %}error {%end%}">
+            {% raw address.country.label(class_="control-label") %} 
+            <div class="controls">
+              {% raw address.country(placeholder=address.country.label.text) %}
+              {% if address.country.errors %}<span class="help-inline">{% raw address.country.errors[0] %}</span> {% end %}
+            </div>
+          </div>
+          <div class="control-group {% if address.zipcode.errors %}error {%end%}">
+            {% raw address.zipcode.label(class_="control-label") %} 
+            <div class="controls">
+              {% raw address.zipcode(placeholder=address.zipcode.label.text) %}
+              {% if address.zipcode.errors %}<span class="help-inline">{% raw address.zipcode.errors[0] %}</span> {% end %}
+            </div>
+          </div>
