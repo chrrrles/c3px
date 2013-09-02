@@ -1,4 +1,4 @@
 c3px
 ====
 
-motor - dry forms with wtforms + schematics
+C3PX - Motor (Tornado and Mongo) + Schematics + WTForms, deployed with Fabric/Cuisine -- periodically checked in from Fossil
