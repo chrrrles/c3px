@@ -1,3 +1,5 @@
 motor
+py-bcrypt
 wtforms
 schematics
+tornadomail

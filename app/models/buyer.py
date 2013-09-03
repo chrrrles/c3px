@@ -1,6 +1,7 @@
 from schematics.models import Model
 from schematics.types import StringType, EmailType, URLType
 from schematics.types.compound import ModelType, ListType
+
 from address import AddressModel
 from user import UserModel
 from comment import CommentModel

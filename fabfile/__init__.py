@@ -14,7 +14,7 @@ def v():
   env.key_filename = 'secrets/vagrant.rsa' 
 
 def deploy(refresh=False):
-  app.deploy(refresh)
+  app.ensure(refresh)
 
 # force install/update of firewalling software
 def firewall_install():

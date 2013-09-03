@@ -9,7 +9,8 @@ def ensure():
   if not installed():
     puts ("Installing Vagrant...")
     install()
-  puts ("Vagrant already installed")
+  else:
+    puts ("Vagrant installed...")
   local('vagrant up')
 
 
@@ -30,5 +31,4 @@ def install():
   open('secrets/vagrant.rsa','w').write (key)
   os.chmod('secrets/vagrant.rsa', 0400)
   
-  return 
 
