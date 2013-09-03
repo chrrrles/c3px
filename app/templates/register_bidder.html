@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Register as a Builder{% end %}
+{% block title %}Register as a Bidder{% end %}
 {% block jumbotron %}
 <div class="jumbotron subhead">
   <div class="container">
     <h1>Sign Up as a Maker </h1>
-    <p>Put your 3D printer to work for you by signing up as a Builder at 3DRFP.com </p>
+    <p>Put your 3D printer to work for you by signing up as a Bidder at 3DRFP.com </p>
   </div>
 </div>
 {% end %}
@@ -16,8 +16,8 @@
       <form class="form-horizontal well" action="{% raw request.uri %}" method="POST">
         <fieldset>
 
-          <legend>{% raw form.contact.label.text %}</legend>
-          {% module ContactFormModule (form.contact) %}
+          <legend>{% raw form.user.label.text %}</legend>
+          {% module UserFormModule (form.user) %}
 
           <legend>{% raw form.billing_details.label.text %}</legend>
           {% module BillingDetailsFormModule (form.billing_details) %}

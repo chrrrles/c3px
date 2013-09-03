@@ -3,9 +3,9 @@ from app import *
 class RegisterHandler(AppHandler):
   def get(self):  
     data = Data()
-    if self.get_argument('builder', None):
-      form = model_form ( BuilderModel() )
-      return self.render('register_builder.html', form = form())
+    if self.get_argument('bidder', None):
+      form = model_form ( BidderModel() )
+      return self.render('register_bidder.html', form = form())
     else: 
       form = model_form ( BuyerModel() )
       return self.render('register.html', form = form())
@@ -17,16 +17,16 @@ class RegisterHandler(AppHandler):
       self.redirect('/')
       return
 
-    if self.get_argument('builder', None):
-      builder = BuilderModel(self._args())
+    if self.get_argument('bidder', None):
+      bidder = BidderModel(self._args())
       try: 
-        builder.validate()
+        bidder.validate()
       except ValidationError:
-        form = model_form(builder)()
+        form = model_form(bidder)()
         form.validate() # hate having to call this here
-        return self.render('register_builder.html', form=form)
+        return self.render('register_bidder.html', form=form)
       else:
-        self.db.builders.insert(builder.serialize(), callback="_on_response")
+        self.db.bidders.insert(bidder.serialize(), callback="_on_response")
 
     else: # you are a buyer then
       buyer = BuyerModel(self._args())
