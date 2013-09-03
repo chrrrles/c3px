@@ -5,11 +5,12 @@ from fabric.context_managers import *
 
 def ensure():
   if is_installed():
-    puts ("Fossil already installed")
-    return
+    puts ("Fossil installed...")
   else:
     puts ("Installing Fossil")
     install()
+  # xinetd has no status, so no upstart_ensure()
+  run ("/etc/init.d/xinetd restart")
 
 def is_installed():
   return file_exists("/home/fossil/repos/c3px.fossil")
@@ -36,5 +37,3 @@ def install():
   if not confirm ("Have you uploaded c3px.fossil to /home/fossil/repos/?", default=False):
     puts ("Exiting Now")
     return
-  # xinetd has no status, so no upstart_ensure()
-  run ("/etc/init.d/xinetd restart")

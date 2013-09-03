@@ -6,11 +6,12 @@ from fabric.context_managers import *
 from . import (mongodb, python, fossil, firewall)
 
 def ensure():
-  if is_installed():
-    puts ("App is already installed")  
-    return
-  puts ("Installing App and dependencies...")
-  install()
+  if not is_installed():
+    puts ("Installing App and dependencies...")
+    install()
+  else:
+    puts ("App is installed...")  
+  deploy()
 
 def is_installed():
   return dir_exists('/web/3drfp')
@@ -41,7 +42,6 @@ def user_setup():
     dir_ensure('/web', owner='c3px', group='c3px')
 
 def deploy(refresh): 
-  ensure()
   with cd('/web/3drfp'), settings(user='c3px'):
     run ('fossil update')
     run ('./venv/bin/pip install -r requirements.txt')

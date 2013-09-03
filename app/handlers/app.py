@@ -1,12 +1,46 @@
 # again, so we can just do `from app import *`
 from tornado.web import RequestHandler
-from .. models import *
-import tornado.web
 from tornado.web import asynchronous
-from .. lib.ormwtf import model_form
-import os,random,uuid
-import tornado.gen as gen
+import tornado.gen 
+import tornado.escape
+from motor import Op
+
+from functools import wraps
 from schematics.exceptions import ValidationError
+from  .. lib.ormwtf import model_form
+import os,random,uuid
+from .. import helpers
+
+from .. models import *
+
+# Wrapper functions for authentication
+def auth_only(f):
+  @functools.wraps(f)
+  @tornado.gen.engine
+  def wrapper(self, *args, **kwars):
+    self._auto_finish = False
+    self.current_user = yield tornado.gen.Task(self.get_current_user_async)
+    if not self.current_user:
+      self.redirect(self.get_login_url() + '?' + 
+        urllib.urlencode({'_next': self.request.uri}))
+    else:
+      f(self, *args, **kwargs)
+  return wrapper
+          
+
+
+def auth_redir(f):
+
+  @functools.wraps(f)
+  @tornado.gen.engine
+  def wrapper(self, *args, **kwargs):
+    self._auto_finish = False
+    self.current_user = yield tornado.gen.Task(self.get_current_user_async)
+    if self.current_user('/'):
+      self.redirect('/')
+    else:
+      f(self, *args, **kwargs)
+  return wrapper
 
 # ugly, I know
 class Data:
@@ -38,8 +72,24 @@ def vivify(source):
   return dest
 
 class AppHandler(RequestHandler):
-  def initialize(self):
-    self.db = self.settings['db']
+  current_user = None
+
+  @property
+  def db(self): 
+    return self.settings['db']
+
+  @property
+  def smtp(self):
+    return self.settings['smtp']
+
+  @tornado.gen.engine
+  def get_current_user_async(self, callback):
+    email = self.get_secure_cookie("current_user") or False
+    if not email:
+      callback(None)
+    else:
+      callback((yield Op(self.db.users.find_one,{"email": email})))
+
   
   # self._args lovin -- we are creating a multidimensional dict
   def _args(self):

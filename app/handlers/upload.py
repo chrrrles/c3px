@@ -13,7 +13,7 @@ class UploadHandler(AppHandler):
 
   #[XXX] Need to store files in GridFS... and also use the library, not calling scripts
   @asynchronous
-  @gen.coroutine
+  @tornado.gen.coroutine
   def post(self):
     name = uuid.uuid4().__str__()
     size = len(self.file.body)

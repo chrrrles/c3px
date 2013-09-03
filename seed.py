@@ -26,7 +26,7 @@ def User():
   lname = sample (s.lastnames,1)[0]
   email_host = sample (s.email_hosts,1)[0]
   email = "%s.%s@%s" % (fname.lower(),lname.lower(), email_host) 
-  while email in emails:
+  while email in emails:  # prevent duplicate emails
     email = "%s.%s%d@%s" % (fname.lower(),lname.lower(),randint(1,100),email_host) 
   emails.append(email)
   return UserModel({
@@ -55,6 +55,9 @@ def seed_bidders():
       address = address,
       billing_details = billing_details))
     db.bidders.insert(bidder.serialize())
+
+def seed_admin(): 
+  user = User()
 
 def seed(): 
   seed_buyers()
