@@ -3,7 +3,7 @@ from fabric.api import *
 from fabric.contrib.console import confirm
 from fabric.context_managers import *
 
-from . import (mongodb, python, fossil)
+from . import (mongodb, python, fossil, firewall)
 
 def ensure():
   if is_installed():
@@ -20,6 +20,7 @@ def install():
   mongodb.ensure()
   fossil.ensure()
   user_setup()
+  firewall.ensure()
   package_ensure('git')
   dir_ensure('/web/3drfp', owner='c3px')
 

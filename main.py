@@ -15,7 +15,7 @@ routes = [
   ('/about', AboutHandler), 
   ('/register', RegisterHandler), 
   ('/rfps', RfpHandler), 
-  ('/builders', BuilderHandler), 
+  ('/bidder', BidderHandler), 
   ('/create', CreateRfpHandler), 
   ('/upload/', UploadHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
