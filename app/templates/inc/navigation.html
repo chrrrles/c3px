@@ -12,11 +12,10 @@
           <li class="divider-vertical"></li>
           <li><a href="/about">About Us</a></li>
           <li class="divider-vertical"></li>
-          <li><a href="/rfp/create">Create RFP</a></li>
-          <li class="divider-vertical"></li>
-          <li><a href="/browse">Browse RFPs</a></li>
+          <li><a href="/rfp/browse">Browse RFPs</a></li>
           <li class="divider-vertical"></li>
         </ul>
+
         <ul class="nav pull-right">
           {% if current_user %}
           <li class="divider-vertical"></li>
@@ -34,18 +33,9 @@
           </li>
           {% else %}
           <li class="divider-vertical"></li>
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-              Register
-              <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="/register"><i class="icon-shopping-cart"></i> as Buyer</a></li>
-              <li><a href="/register?bidder=true"><i class="icon-wrench"></i> as Bidder</a></li>
-            </ul>
-          </li>
+          <li><a href="/register"><i class="icon-ok"></i> Register</a></li>
           <li class="divider-vertical"></li>
-          <li><a href="/login">Login</a></li>
+          <li><a href="/login"><i class="icon-user"></i> Login</a></li>
           <li class="divider-vertical"></li>
           {% end %}
 

@@ -19,7 +19,7 @@ from .. models import *
 def auth_only(f):
   @functools.wraps(f)
   @tornado.gen.engine
-  def wrapper(self, *args, **kwars):
+  def wrapper(self, *args, **kwargs):
     self._auto_finish = False
     self.current_user = yield tornado.gen.Task(self.get_current_user_async)
     if not self.current_user:
@@ -29,8 +29,6 @@ def auth_only(f):
       f(self, *args, **kwargs)
   return wrapper
           
-
-
 def auth_redir(f):
 
   @functools.wraps(f)

@@ -54,9 +54,10 @@ class ConfirmAccountHandler(AppHandler):
 class LoginHandler(AppHandler):
   @auth_redir
   def get(self):
+    _next = self.get_argument('_next', '/')
     form = model_form(UserModel(),only=['email','password'])
     login_form = form()
-    self.render('login.html',form=login_form, message=None, _next='/')
+    self.render('login.html',form=login_form, message=None, _next=_next)
 
   @auth_redir
   @tornado.gen.engine
@@ -64,14 +65,14 @@ class LoginHandler(AppHandler):
   def post(self):
     message = None
     luser = UserModel(self._args())  # the 'login' user
-    next_ = self.get_argument('_next', '/')
+    _next = self.get_argument('_next', '/')
     user = yield Op( self.db.users.find_one, {'email': luser.email})
     if user:
       if user['activated']:
         hashpw = bcrypt.hashpw(luser.password, user['password'])
         if hashpw == user['password']:
           self.set_secure_cookie('current_user', user['email'])
-          self.redirect(next_)
+          self.redirect(_next)
           return
         else:
           message = "Invalid email or password combination"
