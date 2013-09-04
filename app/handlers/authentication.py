@@ -144,12 +144,13 @@ class ResetPasswordHandler(AppHandler):
 
 
 class LogoutHandler(AppHandler):
-  @auth_only
-  @tornado.gen.engine
-  @tornado.web.asynchronous
+
+#  @auth_only
+#  @tornado.gen.engine
+#  @tornado.web.asynchronous
   def post(self): 
     self.clear_cookie('current_user')
-    self.redirect('/')
+    return self.redirect('/')
  
 
         

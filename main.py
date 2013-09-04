@@ -35,13 +35,16 @@ debug=True,
 routes = [ 
   ('/',HomeHandler), 
   ('/login',LoginHandler), 
+  ('/logout',LogoutHandler), 
   ('/about', AboutHandler), 
   ('/register', RegisterHandler), 
-  ('/rfps', RfpHandler), 
-  ('/bidder', BidderHandler), 
-  ('/create', CreateRfpHandler), 
-  ('/upload/', UploadHandler),
+  ('/user/profile', UserProfileHandler), 
+  ('/user/settings', UserSettingsHandler), 
+  ('/rfp/create', CreateRfpHandler), 
+  ('/rfp/browse', BrowseRfpHandler), 
+  ('/upload', UploadHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
+
 db = MotorClient().open_sync().c3px
 
 
@@ -51,6 +54,7 @@ application = tornado.web.Application(
   ui_modules=uimodules, 
   debug=debug, 
   upload_dir="uploads", 
+  login_url = '/login',
   template_path=template_path,
   cookie_secret = options.cookie_secret
 ) 

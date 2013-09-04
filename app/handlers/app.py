@@ -1,4 +1,7 @@
 # again, so we can just do `from app import *`
+import functools
+import os, random, uuid, urllib
+
 from tornado.web import RequestHandler
 from tornado.web import asynchronous
 import tornado.gen 
@@ -6,10 +9,8 @@ import tornado.escape
 from tornado.options import options
 from motor import Op
 
-import functools
 from schematics.exceptions import ValidationError
 from  .. lib.ormwtf import model_form
-import os,random,uuid
 from .. import helpers
 
 from .. models import *
@@ -111,9 +112,9 @@ class AppHandler(RequestHandler):
   @tornado.web.asynchronous
   def render(self, template_name,**kwargs):
     kwargs.update({
-        'current_user':
-            (yield tornado.gen.Task(self.get_current_user_async)),
-        'url_path': helpers.Url(self.request.uri).path,
+      'current_user':
+        (yield tornado.gen.Task(self.get_current_user_async)),
+      'url_path': helpers.Url(self.request.uri).path,
     })
     super(AppHandler, self).render(template_name, **kwargs)
        
