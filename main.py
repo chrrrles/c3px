@@ -52,7 +52,6 @@ application = tornado.web.Application(
   db = db,
   ui_modules=uimodules, 
   debug=debug, 
-  upload_dir="uploads", 
   login_url = '/login',
   template_path=template_path,
   cookie_secret = options.cookie_secret

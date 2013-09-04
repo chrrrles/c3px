@@ -103,9 +103,6 @@ class AppHandler(RequestHandler):
     #return vivify(a)
     return a
 
-  def upload_dir(self):
-    return self.settings['upload_dir']
-
   @tornado.gen.engine
   @tornado.web.asynchronous
   def render(self, template_name,**kwargs):
