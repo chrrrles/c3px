@@ -2,13 +2,8 @@ from app import *
 
 class RegisterHandler(AppHandler):
   def get(self):  
-    data = Data()
-    if self.get_argument('bidder', None):
-      form = model_form ( BidderModel() )
-      return self.render('register_bidder.html', form = form())
-    else: 
-      form = model_form ( BuyerModel() )
-      return self.render('register.html', form = form())
+    form = model_form ( UserModel() )
+    return self.render('register.html', form = form())
 
   @tornado.web.asynchronous
   @tornado.gen.engine

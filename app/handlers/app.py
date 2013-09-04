@@ -3,9 +3,10 @@ from tornado.web import RequestHandler
 from tornado.web import asynchronous
 import tornado.gen 
 import tornado.escape
+from tornado.options import options
 from motor import Op
 
-from functools import wraps
+import functools
 from schematics.exceptions import ValidationError
 from  .. lib.ormwtf import model_form
 import os,random,uuid
@@ -36,7 +37,7 @@ def auth_redir(f):
   def wrapper(self, *args, **kwargs):
     self._auto_finish = False
     self.current_user = yield tornado.gen.Task(self.get_current_user_async)
-    if self.current_user('/'):
+    if self.current_user:
       self.redirect('/')
     else:
       f(self, *args, **kwargs)
@@ -90,12 +91,29 @@ class AppHandler(RequestHandler):
     else:
       callback((yield Op(self.db.users.find_one,{"email": email})))
 
+  def get_template_namespace(self):
+    namespace = super(AppHandler, self).get_template_namespace()
+    namespace.update({
+      'options' : options,
+      'helpers' : helpers})
+    return namespace
   
   # self._args lovin -- we are creating a multidimensional dict
   def _args(self):
     a =  { k: self.get_argument(k) for k in self.request.arguments }
-    return vivify(a)
+    #return vivify(a)
+    return a
 
   def upload_dir(self):
     return self.settings['upload_dir']
+
+  @tornado.gen.engine
+  @tornado.web.asynchronous
+  def render(self, template_name,**kwargs):
+    kwargs.update({
+        'current_user':
+            (yield tornado.gen.Task(self.get_current_user_async)),
+        'url_path': helpers.Url(self.request.uri).path,
+    })
+    super(AppHandler, self).render(template_name, **kwargs)
        

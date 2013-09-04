@@ -10,7 +10,7 @@
 {% block content %}
   {% if isinstance(message, str) %}
     <div class="alert alert-error">
-      {{ _(message) }}
+      {{ message }}
     </div>
   {% elif isinstance(message, dict) %}
     <div class="alert alert-error">
@@ -23,7 +23,6 @@
   {% end %}
   <div class="row-fluid">
     <div class="span8">
-      {% set form = forms.LoginForm(locale_code=locale.code) %}
       <form class="form-horizontal" action="/login" method="post">
         <fieldset>
           <legend>{{ _("Login") }}</legend>
@@ -39,7 +38,7 @@
               {% raw form.password(placeholder=form.password.label.text) %}
             </div>
           </div>
-          {% raw form.next_(value=_next or '') %}
+          <input type="hidden" name="_next" value="{{ _next }}"></input>
           {% raw xsrf_form_html() %}
           <div class="control-group">
             <div class="controls">
@@ -54,7 +53,6 @@
     </div>
   </div>
 {% end %}
-
 {% block footer %}
 {% end %}
 
