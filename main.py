@@ -42,7 +42,6 @@ routes = [
   ('/user/settings', UserSettingsHandler), 
   ('/rfp/create', CreateRfpHandler), 
   ('/rfp/browse', BrowseRfpHandler), 
-  ('/upload', UploadHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
 
 db = MotorClient().open_sync().c3px
