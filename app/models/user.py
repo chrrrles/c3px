@@ -3,12 +3,12 @@ from schematics.types import StringType, EmailType, DateTimeType, BooleanType
 
 class UserModel(Model):
   firstname = StringType ( 
-    required=False, 
+    default = '',
     serialized_name = "First Name",
     max_length = 40 )
 
   lastname = StringType ( 
-    required=False,
+    default='',
     serialized_name = "Last Name",
     max_length = 40 )
 
@@ -23,11 +23,13 @@ class UserModel(Model):
     serialized_name = "Password" )
 
   phone = StringType (  
-    required=False,
+    default = '',
     serialized_name = 'Phone Number',
     max_length=30 )
 
   date_create = DateTimeType(required=False)
+
+  join_hash = StringType()
 
   activated = BooleanType (
     default = False,

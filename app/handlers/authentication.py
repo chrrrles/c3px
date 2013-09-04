@@ -1,4 +1,6 @@
+# -*- coding: utf-8 *-*
 from app import *
+import bcrypt, datetime
 
 class RegisterHandler(AppHandler):
   @auth_redir
@@ -8,24 +10,33 @@ class RegisterHandler(AppHandler):
     self.render('register.html', form = user_form)
 
   @auth_redir
+  @tornado.gen.engine
+  @tornado.web.asynchronous
   def post(self):
     user = UserModel(self._args())
     try:
       user.validate()
-      if self.db.users.find_one({'email': user.email}):
+      email_user = yield Op (self.db.users.find_one,{'email': user.email})
+      if email_user:
         raise ValidationError('email_exists')
     except ValidationError, e: 
       form = model_form(user)
       user_form = form()
       user_form.validate()
-      if e == "email_exists":
-        user_form.email.errors = 'Email address is already registered'
-      return self.render('register.html', form = user_form)
+      if  'email_exists' in e.messages:
+        user_form.email.errors = ['Email address is not available']
+      self.render('register.html', form = user_form)
+      return
     else:
-      self.db.users.insert(user.serialize())
-      self.smtp.send('Confirm your new account', 'confirm.html', 
-        user.email, {'user':user.serialize()})
-      return self.redirect('/login')
+      user.activated = True # [XXX] Just for testing till smtp is up
+      user.password = bcrypt.hashpw(user.password, bcrypt.gensalt()) 
+      user.date_create = datetime.datetime.now()
+      user.join_hash = helpers.generate_md5()  
+      yield Op (self.db.users.insert, user._data)
+      #self.smtp.send('Confirm your new account', 'confirm.html', 
+      #  user.email, {'user':user._data})
+      self.redirect('/login')
+      return
 
 
 # thanks to Jorge Puente Sarrín for the code inspiration
@@ -44,31 +55,36 @@ class LoginHandler(AppHandler):
   @auth_redir
   def get(self):
     form = model_form(UserModel(),only=['email','password'])
-    self.render('login.html',form, message=None)
+    login_form = form()
+    self.render('login.html',form=login_form, message=None, _next='/')
 
   @auth_redir
   @tornado.gen.engine
   @tornado.web.asynchronous
   def post(self):
+    message = None
     luser = UserModel(self._args())  # the 'login' user
-    message = ''
-    if user.validate(): 
-      next_ = self.get_argument('next_', '/')
-      user = yield Op( self.db.users.find_one, {'email': luser.email})
-      if user:
-        if user.activated:
-          legit = bcrypt.hashpw(luser.password, user.password) == user.password
-        if legit:
-          self.set_secure_cookie('current_user', user.email)
-          return self.redirect(next_)
-      # user doesn't exist or pw incorrect so pass vague message
+    next_ = self.get_argument('_next', '/')
+    user = yield Op( self.db.users.find_one, {'email': luser.email})
+    if user:
+      if user['activated']:
+        hashpw = bcrypt.hashpw(luser.password, user['password'])
+        if hashpw == user['password']:
+          self.set_secure_cookie('current_user', user['email'])
+          self.redirect(next_)
+          return
+        else:
+          message = "Invalid email or password combination"
+      else:
+        message = "User not yet confirmed"
+    else:
       message = "Invalid email or password combination"
 
     form = model_form(luser, only=['email','password'])
     login_form = form()
     # [XXX] wish we didn't have to validate form here, seems redundant
-    form.validate() 
-    self.render('login.html', form, message=message)
+    login_form.validate() 
+    self.render('login.html', form=login_form, message=message, _next=_next)
 
 
 class RequestNewPasswordHandler(AppHandler):
@@ -91,11 +107,11 @@ class RequestNewPasswordHandler(AppHandler):
         {'email': email}, {
           '$set': {
             'reset_hash': reset_hash,
-            'enabled' : True  }
+            'enabled' : True  },
           '$unset' : {'join_hash' : 1}},
         new = True)
       self.smtp.send( 'Reset password', 'reset_password.html', 
-        user.email, {'user':user.serialize()})
+        user.email, {'user':user._data})
 
     # Don't tell luser if an email exists or not
     self.redirect('/')
@@ -121,7 +137,7 @@ class ResetPasswordHandler(AppHandler):
         new=True)
       if user:
         self.smtp.send( 'Updated Password', 'reset_password.html',
-          user.email, {'user' : user.serialize()})
+          user.email, {'user' : user._data})
         return self.redirect('/login')
     return self.render('authentication/new_password.html',
       message = "Invalid Arguments", reset_hash = '' )

@@ -1,5 +1,6 @@
 motor
 py-bcrypt
 wtforms
-schematics
+#schematics
+git+https://github.com/j2labs/schematics.git@master#egg=schematics
 tornadomail

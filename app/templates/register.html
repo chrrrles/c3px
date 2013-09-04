@@ -15,16 +15,10 @@
       <h2>Register as a Buyer</h1>
       <form class="form-horizontal well" action="{% raw request.uri %}" method="POST">
         <fieldset>
-          <legend>User Information</legend>
-          {% module UserFormModule( form.user ) %}
+          <legend>User Registration</legend>
 
-          <legend>Billing Address</legend>
-          {% module AddressFormModule( form.billing_address ) %}
+          {% module UserFormModule(form) %}
 
-          <legend>Delivery Address</legend>
-          {% module AddressFormModule( form.delivery_address ) %}
-
-          <button type="submit" class="btn">Register</button>
         </fieldset>
       </form>
     </div>

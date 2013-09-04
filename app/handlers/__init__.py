@@ -1,8 +1,8 @@
-# so we can just do `from app.handlers import * `
+# -*- coding: utf-8 *-*
 from create_rfp import CreateRfpHandler 
 from upload import UploadHandler
 from home import HomeHandler
 from home import AboutHandler
-from register import RegisterHandler
+from authentication import  *
 from bidder import BidderHandler
 from rfp import RfpHandler
