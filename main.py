@@ -10,7 +10,7 @@ from app import uimodules
 from app.handlers import *
 
 cwd = os.getcwd()
-static_path =os.path.join(cwd, 'app/lib/static')
+static_path =os.path.join(cwd, 'static')
 template_path = os.path.join(cwd, "app/templates")
 
 # email options -- redefine in conf file
@@ -35,13 +35,18 @@ debug=True,
 routes = [ 
   ('/',HomeHandler), 
   ('/login',LoginHandler), 
+  ('/logout',LogoutHandler), 
   ('/about', AboutHandler), 
   ('/register', RegisterHandler), 
-  ('/rfps', RfpHandler), 
-  ('/bidder', BidderHandler), 
-  ('/create', CreateRfpHandler), 
-  ('/upload/', UploadHandler),
+  ('/user/profile', UserProfileHandler), 
+  ('/user/settings', UserSettingsHandler), 
+  ('/rfp/create', CreateRfpHandler), 
+  ('/rfp/browse', BrowseRfpHandler), 
+  ('/asset', AssetHandler),
+  ('/asset/(.*)/(thumbnail)', AssetHandler),
+  ('/asset/(.*)', AssetHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
+
 db = MotorClient().open_sync().c3px
 
 
@@ -50,7 +55,7 @@ application = tornado.web.Application(
   db = db,
   ui_modules=uimodules, 
   debug=debug, 
-  upload_dir="uploads", 
+  login_url = '/login',
   template_path=template_path,
   cookie_secret = options.cookie_secret
 ) 

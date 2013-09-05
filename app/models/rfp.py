@@ -13,19 +13,20 @@ class RfpModel(Model):
     required=True,
     serialized_name = "Requester" )
 
-  files = ModelType(
-    FileModel, 
-    serialized_name="RFP File",
-    required=True)
+  files = ListType(
+    ModelType( FileModel),
+    serialized_name="RFP Files")
 
   timestamp = DateTimeType(
-    serialized_name="RFP Date", 
-    required=True )
+    serialized_name="RFP Date" )
 
   active = BooleanType(
     serialized_name="Active", 
     default=False,
     required=True )
+
+  description = StringType(
+    serialized_name="Description of RFP" )
 
   comments = ListType(  
     ModelType(CommentModel),

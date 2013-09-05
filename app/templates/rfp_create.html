@@ -1,18 +1,23 @@
 {% extends 'base.html' %}
-{% block title %}Builders on 3DRFP.com{% end %}
+
+{% import wtforms %}
+
+{% block title %}| Submit an RFP{% end %}
+
 {% block jumbotron %}
-<div class="jumbotron subhead">
+<header class="jumbotron subhead" >
   <div class="container">
-    <h1>Builders of 3DRFP.com</h1>
-    <p>These Makers have the tools to realize your vision.</p>
+    <h1>Step One:</h1>
+    <p>Upload your files</p>
   </div>
-</div>
+</header>
 {% end %}
+
 {% block content %}
 <div class="container">
   <div class="row">
     <div class="span8 offset2">
-      <h2> A List of Builders</h1>
+    {% module FileUploadModule() %}
     </div>
   </div>
 </div>

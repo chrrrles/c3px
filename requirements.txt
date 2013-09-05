@@ -4,3 +4,6 @@ wtforms
 #schematics
 git+https://github.com/j2labs/schematics.git@master#egg=schematics
 tornadomail
+rq
+pytz
+PIL

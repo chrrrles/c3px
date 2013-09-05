@@ -13,7 +13,7 @@ class RegisterHandler(AppHandler):
   @tornado.gen.engine
   @tornado.web.asynchronous
   def post(self):
-    user = UserModel(self._args())
+    user = UserModel(self._args)
     try:
       user.validate()
       email_user = yield Op (self.db.users.find_one,{'email': user.email})
@@ -54,24 +54,25 @@ class ConfirmAccountHandler(AppHandler):
 class LoginHandler(AppHandler):
   @auth_redir
   def get(self):
+    _next = self.get_argument('_next', '/')
     form = model_form(UserModel(),only=['email','password'])
     login_form = form()
-    self.render('login.html',form=login_form, message=None, _next='/')
+    self.render('login.html',form=login_form, message=None, _next=_next)
 
   @auth_redir
   @tornado.gen.engine
   @tornado.web.asynchronous
   def post(self):
     message = None
-    luser = UserModel(self._args())  # the 'login' user
-    next_ = self.get_argument('_next', '/')
+    luser = UserModel(self._args)  # the 'login' user
+    _next = self.get_argument('_next', '/')
     user = yield Op( self.db.users.find_one, {'email': luser.email})
     if user:
       if user['activated']:
         hashpw = bcrypt.hashpw(luser.password, user['password'])
         if hashpw == user['password']:
           self.set_secure_cookie('current_user', user['email'])
-          self.redirect(next_)
+          self.redirect(_next)
           return
         else:
           message = "Invalid email or password combination"
@@ -144,12 +145,13 @@ class ResetPasswordHandler(AppHandler):
 
 
 class LogoutHandler(AppHandler):
-  @auth_only
-  @tornado.gen.engine
-  @tornado.web.asynchronous
+
+#  @auth_only
+#  @tornado.gen.engine
+#  @tornado.web.asynchronous
   def post(self): 
     self.clear_cookie('current_user')
-    self.redirect('/')
+    return self.redirect('/')
  
 
         
