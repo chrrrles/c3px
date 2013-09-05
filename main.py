@@ -10,7 +10,7 @@ from app import uimodules
 from app.handlers import *
 
 cwd = os.getcwd()
-static_path =os.path.join(cwd, 'app/lib/static')
+static_path =os.path.join(cwd, 'static')
 template_path = os.path.join(cwd, "app/templates")
 
 # email options -- redefine in conf file
@@ -42,6 +42,9 @@ routes = [
   ('/user/settings', UserSettingsHandler), 
   ('/rfp/create', CreateRfpHandler), 
   ('/rfp/browse', BrowseRfpHandler), 
+  ('/asset', AssetHandler),
+  ('/asset/(.*)/(thumbnail)', AssetHandler),
+  ('/asset/(.*)', AssetHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
 
 db = MotorClient().open_sync().c3px

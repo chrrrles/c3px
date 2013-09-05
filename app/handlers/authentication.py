@@ -13,7 +13,7 @@ class RegisterHandler(AppHandler):
   @tornado.gen.engine
   @tornado.web.asynchronous
   def post(self):
-    user = UserModel(self._args())
+    user = UserModel(self._args)
     try:
       user.validate()
       email_user = yield Op (self.db.users.find_one,{'email': user.email})
@@ -64,7 +64,7 @@ class LoginHandler(AppHandler):
   @tornado.web.asynchronous
   def post(self):
     message = None
-    luser = UserModel(self._args())  # the 'login' user
+    luser = UserModel(self._args)  # the 'login' user
     _next = self.get_argument('_next', '/')
     user = yield Op( self.db.users.find_one, {'email': luser.email})
     if user:

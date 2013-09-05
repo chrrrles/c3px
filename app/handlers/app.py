@@ -2,12 +2,15 @@
 import functools
 import os, random, uuid, urllib
 
+from bson.binary import Binary
+
 from tornado.web import RequestHandler
 from tornado.web import asynchronous
+from tornado.ioloop import IOLoop
 import tornado.gen 
-import tornado.escape
 from tornado.options import options
 from motor import Op
+from motor import MotorGridFS
 
 from schematics.exceptions import ValidationError
 from  .. lib.ormwtf import model_form
@@ -15,13 +18,20 @@ from .. import helpers
 
 from .. models import *
 
+# for queueing
+from redis import Redis
+from rq import Queue
+
+
 # Wrapper functions for authentication
 def auth_only(f):
   @functools.wraps(f)
   @tornado.gen.engine
   def wrapper(self, *args, **kwargs):
     self._auto_finish = False
-    self.current_user = yield tornado.gen.Task(self.get_current_user_async)
+    self.current_user = yield tornado.gen.Task(
+      self.get_current_user_async)
+
     if not self.current_user:
       self.redirect(self.get_login_url() + '?' + 
         urllib.urlencode({'_next': self.request.uri}))
@@ -74,6 +84,11 @@ def vivify(source):
 class AppHandler(RequestHandler):
   current_user = None
 
+  # Redis Queue... whew!
+  @property
+  def q(self):
+   return Queue (connection=Redis()) 
+
   @property
   def db(self): 
     return self.settings['db']
@@ -98,6 +113,7 @@ class AppHandler(RequestHandler):
     return namespace
   
   # self._args lovin -- we are creating a multidimensional dict
+  @property
   def _args(self):
     a =  { k: self.get_argument(k) for k in self.request.arguments }
     #return vivify(a)

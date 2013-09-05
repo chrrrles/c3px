@@ -1,16 +1,30 @@
 from schematics.models import Model
-from schematics.types import StringType, IntType
+from schematics.types import StringType, IntType, UUIDType, EmailType, BooleanType
+
+from .. lib.mongo import ObjectIdType
+
 
 class FileModel(Model):
-  name = StringType()
-  name.serialized_name = "File Name"
+  filename = StringType(
+    serialized_name = "File Name",
+    max_length=255)
 
-  size = IntType()  
-  size.serialized_name = "File Size"
+  size = IntType( 
+    serialized_name = "File Size" ) 
 
-  content_type = StringType()
-  content_type.serialized_name = "File Type"
+  content_type = StringType(
+    serialized_name = "File Type" )
 
-  path = StringType()
-  path.serialized_name =  "File Path"
+  public_id = UUIDType(
+    serialized_name = "Published Object ID" )
+
+  object_id = ObjectIdType(
+    serialized_name = 'Internal Object ID')
+
+  owner = EmailType(
+    serialized_name = "Owner ID")
+
+  public = BooleanType (  
+    default=True, 
+    serialized_name = "Publicly Visible")
 
