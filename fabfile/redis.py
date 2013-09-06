@@ -10,7 +10,7 @@ def ensure():
   else:
     puts ("Installing Redis")
     install()
-  upstart_ensure('redis')
+  upstart_ensure('redis-server')
     
 
 def is_installed():
@@ -19,4 +19,4 @@ def is_installed():
   
 
 def install():
-  package_ensure('redis')
+  package_ensure('redis-server')

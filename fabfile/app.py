@@ -6,23 +6,23 @@ from fabric.context_managers import *
 from . import (mongodb, python, fossil, firewall, redis)
 
 def ensure():
-  if not is_installed():
-    puts ("Installing App and dependencies...")
-    install()
-  else:
-    puts ("App is installed...")  
-  deploy()
-
-def is_installed():
-  return dir_exists('/web/3drfp')
-
-def install():
+  # let's make sure all this is installed before we do anything
   python.ensure()
   mongodb.ensure()
   fossil.ensure()
   user_setup()
   redis.ensure()
   firewall.ensure()
+  if not is_installed():
+    puts ("Installing App and dependencies...")
+    install()
+  puts ("App is installed...")  
+  deploy()
+
+def is_installed():
+  return dir_exists('/web/3drfp')
+
+def install():
   dir_ensure('/web/3drfp', owner='c3px')
 
   with cd('/web/3drfp/'), settings(user='c3px'):
