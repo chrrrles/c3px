@@ -3,7 +3,7 @@ from fabric.api import *
 from fabric.contrib.console import confirm
 from fabric.context_managers import *
 
-from . import (mongodb, python, fossil, firewall, redis)
+from . import (mongodb, python, fossil, firewall, redis, blender)
 
 def ensure():
   # let's make sure all this is installed before we do anything
@@ -12,6 +12,7 @@ def ensure():
   fossil.ensure()
   user_setup()
   redis.ensure()
+  blender.ensure()
   firewall.ensure()
   if not is_installed():
     puts ("Installing App and dependencies...")
