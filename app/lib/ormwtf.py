@@ -1,5 +1,5 @@
 # from Ryan Olson
-# https://github.com/ryanolson/schematics
+# https://github.com/ryanolson/schematics-wtf
 #
 """
 Tools for generating forms based on Schematics Models

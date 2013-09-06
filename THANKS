@@ -1,0 +1,22 @@
+C3PX has originally been written by Charles Paul. 
+
+
+Blender rendering is based on a script from Chris
+"Nophead"
+https://github.com/nophead
+
+libormwtf (schematics-wtf) was originally written by 
+Ryan Olson
+https://github.com/ryanolson
+
+Thanks to Jorge Puente Sarrín for the code inspiration
+from Selene in app/handlers/authorization.py 
+https://github.com/puentesarrin
+
+
+Many people can further contributed to C3PX by reporting 
+problems, suggesting various improvements, or submitting 
+actual code. Following will be a list of these people. 
+Help me keep it complete and exempt of errors
+
+(your name here?)
