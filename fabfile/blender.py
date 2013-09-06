@@ -12,7 +12,7 @@ def ensure():
   puts ("Blender is installed")
 
 def is_installed():
-  file_exists('/web/blender/blender')
+  return file_exists('/web/blender/blender')
 
 def install():
   package_update()
