@@ -3,26 +3,27 @@ from fabric.api import *
 from fabric.contrib.console import confirm
 from fabric.context_managers import *
 
-from . import (mongodb, python, fossil, firewall, redis)
+from . import (mongodb, python, fossil, firewall, redis, blender)
 
 def ensure():
+  # let's make sure all this is installed before we do anything
+  python.ensure()
+  mongodb.ensure()
+  fossil.ensure()
+  user_setup()
+  redis.ensure()
+  blender.ensure()
+  firewall.ensure()
   if not is_installed():
     puts ("Installing App and dependencies...")
     install()
-  else:
-    puts ("App is installed...")  
+  puts ("App is installed...")  
   deploy()
 
 def is_installed():
   return dir_exists('/web/3drfp')
 
 def install():
-  python.ensure()
-  mongodb.ensure()
-  fossil.ensure()
-  user_setup()
-  redis.ensure()
-  firewall.ensure()
   dir_ensure('/web/3drfp', owner='c3px')
 
   with cd('/web/3drfp/'), settings(user='c3px'):
@@ -40,7 +41,7 @@ def user_setup():
   with mode_sudo():
     dir_ensure('/web', owner='c3px', group='c3px')
 
-def deploy(refresh): 
+def deploy(): 
   with cd('/web/3drfp'), settings(user='c3px'):
     run ('fossil update')
     run ('./venv/bin/pip install -r requirements.txt')

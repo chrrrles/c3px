@@ -29,7 +29,7 @@ $(document).ready(function () {
     autoUpload: false
   }).on('complete', function(event, id, fileName, responseJSON) {
     if (responseJSON.success) {
-      $(this).append('<img src="/asset/'+responseJSON.newUuid +'/thumbnail" alt="' + fileName + '">');
+      $(this).append('<img class="img-rounded" src="/asset/'+responseJSON.newUuid +'/thumbnail" alt="' + fileName + '">');
     }
   });
 

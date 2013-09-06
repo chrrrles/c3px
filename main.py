@@ -43,7 +43,7 @@ routes = [
   ('/rfp/create', CreateRfpHandler), 
   ('/rfp/browse', BrowseRfpHandler), 
   ('/asset', AssetHandler),
-  ('/asset/(.*)/(thumbnail)', AssetHandler),
+  ('/asset/(.*)/(.*)', AssetHandler),
   ('/asset/(.*)', AssetHandler),
   ('/static/(.*)',tornado.web.StaticFileHandler, {'path':static_path})]
 

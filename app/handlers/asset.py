@@ -1,20 +1,24 @@
 from app import *
 from .. lib.thumbnail import thumbnail 
+from .. lib.render import render_stl
 import time
 
 class AssetHandler(AppHandler):
 
   @tornado.web.asynchronous
   @tornado.gen.engine
-  def get(self, public_id, thumbnail=False):  
-    thumb = ""
-    if thumbnail:
-      thumb ="thumb_"
+  def get(self, public_id, ftype=False):  
+    prefix=''
+    if ftype == "thumbnail":
+      prefix ="thumb_"
+    elif ftype == "stl":
+      prefix = "stl_"
+      
     File = yield Op (self.db.files.find_one, {
       'public_id' : uuid.UUID(public_id) } )
     if File:
-      self.set_header("Content-Type", File["%scontent_type" % thumb])
-      self.write(File["%scontent" % thumb])
+      self.set_header("Content-Type", File["%scontent_type" % prefix])
+      self.write(File["%scontent" % prefix])
       self.finish()
 
   @auth_only
@@ -38,6 +42,27 @@ class AssetHandler(AppHandler):
         return
       content_type = upload['content_type']
       public_id = uuid.uuid1() 
+      stl_content = None
+      stl_content_type = None
+
+      # Render STL file
+      if filename.split('.')[-1].lower() == 'stl':
+        stl_content = content
+        stl_content_type = content_type 
+        job = self.q.enqueue( render_stl, stl_content )
+        io = IOLoop.instance()
+        while True:
+          yield tornado.gen.Task(
+            io.add_timeout,
+            time.time() + .5 )  # this job takes a while...
+          if job.result is not None:
+            content = job.result
+            content_type = 'image/jpeg'
+            break
+        if not content:
+          self.write({ 'error' : 'Render Failed' })
+          self.finish()
+          return 
 
       # we need to create a thumbnail now...
       job = self.q.enqueue( thumbnail, content )
@@ -50,19 +75,14 @@ class AssetHandler(AppHandler):
           thumb_content = job.result
           break
 
-      print "thumb size: %d" % len(thumb_content)
-      # now we don't write to GridFS
-      #fs = yield Op (MotorGridFS(self.db).open)
-      #gridin = yield Op (fs.new_file)
-      #yield Op (gridin.write, body)
-      #yield Op (gridin.close)
-      #object_id =  gridin._id       
       File = {
         'filename' : filename,
         'size' : size,
         'content_type' : content_type,
         'public_id' : public_id,
         'content' : Binary(content),
+        'stl_content' : Binary(stl_content) if stl_content else None,
+        'stl_content_type' : stl_content_type,
         'thumb_content' : Binary(thumb_content),
         'thumb_content_type' : "image/jpeg",  # hardcoding for now
         'owner' : self.current_user['email'] }

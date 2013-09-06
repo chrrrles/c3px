@@ -52,12 +52,9 @@ def render_thumb(image,gl=False,anim=False):
             bpy.ops.render.render(write_still=True)
             bpy.data.images['Render Result'].save_render(filepath=image)
 
-image = sys.argv[-1]
-stl = sys.argv[-2]
-print(stl)
-print(image)
-
-load_stl(stl)
-place_camera()
-render_thumb(image,gl=False)
-#bpy.ops.object.delete()
+if __name__ =="__main__":
+  image = sys.argv[-1]
+  stl = sys.argv[-2]
+  load_stl(stl)
+  place_camera()
+  render_thumb(image,gl=False)
