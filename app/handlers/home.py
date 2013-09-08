@@ -24,5 +24,6 @@ class HomeHandler(AppHandler):
 
 # Another 'static' page handler
 class AboutHandler(AppHandler):
+  @tornado.web.asynchronous
   def get(self):
     self.render('about.html') 

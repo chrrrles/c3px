@@ -17,7 +17,6 @@
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
 from app import *
-import bcrypt, datetime
 
 class RegisterHandler(AppHandler):
   @auth_redir
@@ -27,7 +26,7 @@ class RegisterHandler(AppHandler):
     self.render('register.html', form = user_form)
 
   @auth_redir
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   @tornado.web.asynchronous
   def post(self):
     user = UserModel(self._args)
@@ -77,7 +76,7 @@ class LoginHandler(AppHandler):
     self.render('login.html',form=login_form, message=None, _next=_next)
 
   @auth_redir
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   @tornado.web.asynchronous
   def post(self):
     message = None
@@ -163,9 +162,9 @@ class ResetPasswordHandler(AppHandler):
 
 class LogoutHandler(AppHandler):
 
-#  @auth_only
-#  @tornado.gen.engine
-#  @tornado.web.asynchronous
+#  @tornado.gen.coroutine
+  @auth_only
+  @tornado.web.asynchronous
   def post(self): 
     self.clear_cookie('current_user')
     return self.redirect('/')

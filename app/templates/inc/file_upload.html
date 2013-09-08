@@ -1,9 +1,13 @@
-<fieldset>
-<legend>Select Files to Upload</legend>
-  <div id="upload-files"></div>
+<div class="well">
+  <div id="uploader"></div>
+  <ul class="thumbnails" id="upload_thumbnails"></ul>
+</div>
+<script type="text/javascript">
+var previously_uploaded = Array();
+{% if len(uploads) > 0 %}
+  {% for upload in uploads %}
+previously_uploaded.push('{{upload}}');
+  {% end %}
+{% end %}
+</script>
 
-  <div id="triggerUpload" class="btn btn-primary" style="margin-top: 10px;">
-    <i class="icon-upload icon-white"></i> Upload Now
-  </div>
-
-</fieldset>

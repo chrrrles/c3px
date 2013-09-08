@@ -15,22 +15,28 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from app import *
+from tornado.web import UIModule
 
-class BrowseRfpHandler(AppHandler):
+class ProjectFormModule(UIModule):
 
-  def get(self):
-    self.render('rfp_browse.html')
+  def render (self, project):
+    return self.render_string("inc/project_form.html", project=project)
 
-
-class CreateRfpHandler(AppHandler):
-
-  @auth_only
-  def get(self):
-    self.render( 'rfp_create.html') 
-
-  @auth_only
-  @tornado.web.asynchronous
-  @tornado.gen.engine
-  def post(self):
-    self.render('rfp_create.html')
+  def embedded_javascript(self):
+    return """ 
+$(function () {
+  'use strict'
+  $("button#submit").click(function(){
+    var error = false;
+    var fields = {
+      'name' : 'project name',
+      'description' : 'project description' }
+    $.each(fields, function(k,v){
+      if ($('#'+k).val() == ""){
+        error = true;
+        $('#'+k).after('<span class="error">Please enter a '+v+'.</span>');
+      }
+    });
+    if (error){return false;}
+  });
+}); """

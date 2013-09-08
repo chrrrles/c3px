@@ -17,7 +17,7 @@
 
 from tornado.web import UIModule
 
-class FileUploadModule(UIModule):
+class StlUploadModule(UIModule):
 
   def css_files(self):  
     return '/static/fineuploader/css/fineuploader-3.8.2.min.css'
@@ -58,7 +58,6 @@ $(document).ready(function () {
       $('#upload_thumbnail_'+id).remove();
     }
   });
-
   // Make sure we submit at least one STL File
   $("button#submit").click(function(){
     var items = $("#uploader").fineUploader('getUploads');
@@ -67,8 +66,14 @@ $(document).ready(function () {
     items.forEach(function(item,n){
       if (item.status == "upload successful"){
         uploads.push(item.uuid)
-        send=true;
+        if (item.name.split('.')[1].toLowerCase() == "stl"){
+          send = true;
+        }
       }
+    });
+    $(previously_uploaded).each(function(n,item){
+      uploads.push(item);
+      send = true;
     });
     if (send){
       uploads.forEach(function(upload,n){
@@ -77,7 +82,7 @@ $(document).ready(function () {
     }
     else{
       $("#alert").removeClass('hidden');
-      $("#alert").append("You must upload at least file")
+      $("#alert").append("You must upload at least 1 STL file")
       setTimeout(function(){
         $("#alert").empty();
         $("#alert").addClass('hidden');
@@ -88,15 +93,15 @@ $(document).ready(function () {
 
   $(previously_uploaded).each(function(n,upload){
     $.get('/asset/'+upload+'/info','', function(xhr) {
-      if (xhr.success) {
-        $("#upload_thumbnails").append('\
-  <li id="upload_thumbnail_'+id+'"> \
-    <div class="thumbnail" > \
-      <img class="img-rounded" src="/asset/'+upload +'/thumbnail" alt="' + fileName + '"> \
-      <h4>'+xhr.filename+'</h4>\
-    </div> \
-  </li> ');
-      }
+      $("#upload_thumbnails").append('\
+<li id="previously_uploaded_'+upload+'"> \
+  <div class="thumbnail" > \
+    <img class="img-rounded" src="/asset/'+upload +'/thumbnail" alt="' + xhr.filename + '"> \
+    <h4>'+xhr.filename+'</h4>\
+    <h5>Previously Uploaded</h5>\
+    <h5>size: '+xhr.size+'</h5> \
+  </div> \
+</li> ');
     })
   }); 
 })

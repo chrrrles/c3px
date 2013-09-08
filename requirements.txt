@@ -1,9 +1,6 @@
 PIL==1.1.7
 WTForms==1.0.4
-greenlet==0.4.1
-motor==0.1.1
 py-bcrypt==0.4
-pymongo==2.5
 python-dateutil==2.1
 pytz==2013d
 redis==2.8.0
@@ -14,3 +11,4 @@ times==0.6.2
 tornado==3.1.1
 tornadomail==0.1.2
 wsgiref==0.1.2
+git+git://github.com/mongodb/motor.git@master

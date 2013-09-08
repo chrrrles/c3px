@@ -15,11 +15,13 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from schematics.models import Model
-from schematics.types import EmailType
+from base import *
 
 # just paypal for now
-class BillingDetailsModel(Model):
+class BillingDetailsModel(BaseModel):
+  owner = EmailType(
+    required = True,
+    serialized_name = "Owner")
   paypal_id = EmailType(
     required = True,
     serialized_name = "Paypal ID")

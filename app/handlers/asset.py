@@ -23,7 +23,7 @@ import time
 class AssetHandler(AppHandler):
 
   @tornado.web.asynchronous
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   def get(self, public_id, ftype=False):  
     prefix=''
     if ftype == "thumbnail":
@@ -31,16 +31,25 @@ class AssetHandler(AppHandler):
     elif ftype == "stl":
       prefix = "stl_"
       
-    File = yield Op (self.db.files.find_one, {
+    asset = yield Op (self.db.files.find_one, {
       'public_id' : uuid.UUID(public_id) } )
-    if File:
-      self.set_header("Content-Type", File["%scontent_type" % prefix])
-      self.write(File["%scontent" % prefix])
+    if asset:
+      if ftype == "info":
+        #if asset.owner != self.current_user['email']:
+        if asset['owner'] != "charles.paul@gmail.com":
+          raise tornado.web.HTTPError(401)
+        self.write({
+          'filename': asset['filename'],
+          'size': helpers.humanize_bytes(asset['size'])})
+        self.finish()
+        return
+      self.set_header("Content-Type", asset["%scontent_type" % prefix])
+      self.write(asset["%scontent" % prefix])
       self.finish()
 
-  @auth_only
+  #@auth_only
   @tornado.web.asynchronous
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   def post(self):
     # We do NOT use these user-generated values anywhere, here just 
     # for reference -- only supporting fineuploader atm
@@ -92,7 +101,7 @@ class AssetHandler(AppHandler):
           thumb_content = job.result
           break
 
-      File = {
+      asset = {
         'filename' : filename,
         'size' : size,
         'content_type' : content_type,
@@ -102,9 +111,10 @@ class AssetHandler(AppHandler):
         'stl_content_type' : stl_content_type,
         'thumb_content' : Binary(thumb_content),
         'thumb_content_type' : "image/jpeg",  # hardcoding for now
-        'owner' : self.current_user['email'] }
+        #'owner' : self.current_user['email'] }
+        'owner' : "charles.paul@gmail.com" }
 
-      file_object = yield Op (self.db.files.insert, File )
+      file_object = yield Op (self.db.files.insert, asset )
 
       self.write({
         'success' : True,
@@ -112,16 +122,16 @@ class AssetHandler(AppHandler):
 
       self.finish()
 
-  @auth_only
+  #@auth_only
   @tornado.web.asynchronous
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   def delete(self, public_id):
-    File = yield Op (self.db.files.find_one, {
+    asset = yield Op (self.db.files.find_one, {
       'public_id' : uuid.UUID(public_id) } )
-    if File:
-      if File['owner'] == self.current_user['email']:
-        model_delete = yield Op (self.db.files.remove, File['_id'])
-        print "\n\n\nFileObject Deleted: \n%s" % model_delete
+    if asset:
+      #if asset['owner'] == self.current_user['email']:
+      if asset['owner'] == "charles.paul@gmail.com":
+        model_delete = yield Op (self.db.files.remove, asset['_id'])
 
         if model_delete:
           self.set_status(204)  # non-authoritative response

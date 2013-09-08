@@ -17,7 +17,7 @@
 
 from tornado.web import UIModule
 
-class RfpItems(UIModule):
+class ProjectItems(UIModule):
 
   def embedded_css(self):
     pass
@@ -26,5 +26,6 @@ class RfpItems(UIModule):
     pass 
 
   def render(self):
-    return self.render_string("templates/inc/rfp_items.html", rfp_items=rfp_items)
+    projects = []
+    return self.render_string("templates/inc/project_items.html", projects=projects)
 

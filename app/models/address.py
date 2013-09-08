@@ -15,10 +15,9 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from schematics.models import Model
-from schematics.types import StringType,EmailType, GeoPointType
+from base import *
 
-class AddressModel(Model):
+class AddressModel(BaseModel):
   street1 = StringType (
     required=True, 
     serialized_name = "Street Line 1", 

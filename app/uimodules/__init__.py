@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from rfp_form import RfpFormModule
+from project_form import ProjectFormModule
 from file_upload import FileUploadModule
+from stl_upload import StlUploadModule
 from navigation import NavigationModule
 from user_forms import *

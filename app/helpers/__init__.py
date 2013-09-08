@@ -16,6 +16,7 @@
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
 # -*- coding: utf-8 *-*
+from __future__ import division
 import string
 import random
 import hashlib
@@ -28,6 +29,25 @@ def generate_string(size=20,
 
 def generate_md5(input_text=generate_string()):
   return hashlib.md5(input_text).hexdigest()
+
+
+def humanize_bytes(B, precision=1):
+  abbrevs = (
+    (1<<50L, 'PB'),
+    (1<<40L, 'TB'),
+    (1<<30L, 'GB'),
+    (1<<20L, 'MB'),
+    (1<<10L, 'kB'),
+    (1, 'bytes')
+  )
+  B = int(B)
+  if B == 1:
+    return '1 byte'
+  for factor, suffix in abbrevs:
+    if B >= factor:
+      break
+  return '%.*f %s' % (precision, B / factor, suffix)
+
 
 import cgi
 import urllib

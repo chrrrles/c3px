@@ -18,6 +18,7 @@
 # again, so we can just do `from app import *`
 import functools
 import os, random, uuid, urllib
+import bcrypt, datetime
 
 from bson.binary import Binary
 
@@ -26,6 +27,8 @@ from tornado.web import asynchronous
 from tornado.ioloop import IOLoop
 import tornado.gen 
 from tornado.options import options
+from tornado.escape import url_escape, url_unescape, xhtml_escape, xhtml_unescape
+
 from motor import Op
 from motor import MotorGridFS
 
