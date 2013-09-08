@@ -96,10 +96,12 @@ $(document).ready(function () {
       $("#upload_thumbnails").append('\
 <li id="previously_uploaded_'+upload+'"> \
   <div class="thumbnail" > \
-    <img class="img-rounded" src="/asset/'+upload +'/thumbnail" alt="' + xhr.filename + '"> \
-    <h4>'+xhr.filename+'</h4>\
-    <h5>Previously Uploaded</h5>\
-    <h5>size: '+xhr.size+'</h5> \
+    <img class="img-rounded" src="/asset/'+upload +'/thumbnail" alt="' + xhr.filename + '"/> \
+    <div class="caption">\
+      <h4>'+xhr.filename+'</h4>\
+      <p>Previously Uploaded</p>\
+      <p>size: '+xhr.size+'</p> \
+    </div> \
   </div> \
 </li> ');
     })
