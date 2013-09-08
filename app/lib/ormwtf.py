@@ -191,8 +191,8 @@ class ModelConverter(object):
 
   @converts('ListType')
   def conv_List(self, model, field, kwargs):
-    if isinstance(field.field, ReferenceField):
-      return ModelSelectMultipleField(model=field.field.model_class, **kwargs)
+    #if isinstance(field.field, ReferenceField):
+    #  return ModelSelectMultipleField(model=field.field.model_class, **kwargs)
     if field.field.choices:
       kwargs['multiple'] = True
       return self.convert(model, field.field, kwargs)

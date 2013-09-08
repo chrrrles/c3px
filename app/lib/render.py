@@ -41,7 +41,12 @@ def render_stl(data):
 
   subprocess.check_output(command.split())
 
-  result = open(outfile).read()
+  try:
+    result = open(outfile).read()
+  except:
+    unlink(infile)
+    return False
+
   unlink(outfile)
   unlink(infile)
 

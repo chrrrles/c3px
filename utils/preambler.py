@@ -43,7 +43,7 @@ def preambling():
       if os.path.splitext(name)[1].lower() == ".py":
         pyfile = open(os.path.join(root,name),'r+')
         old = pyfile.read()
-        if old.splitlines()[:17] != preamble.splitlines():
+        if old.splitlines()[:numlines] != preamble.splitlines():
           pyfile.seek(0)
           pyfile.write(preamble + old)
           

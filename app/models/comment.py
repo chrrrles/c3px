@@ -15,12 +15,10 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from schematics.models import Model
-from schematics.types import StringType, DateTimeType, BooleanType
-from schematics.types.compound import ModelType
+from base import * 
 from user import UserModel # this is the 'poster'
 
-class CommentModel(Model):
+class CommentModel(BaseModel):
   timestamp = DateTimeType(
     required=True, 
     serialized_name="Comment Date")
@@ -29,8 +27,12 @@ class CommentModel(Model):
     required=True,
     serialized_name = "Comment" )
 
-  commenter = ModelType(
-    UserModel, 
-    serialized_name="Commenter" )
+  commenter = EmailType(
+    required = True,
+    serialized_name = "Commenter")
+
+  subject = ObjectIdType(
+    required=True,
+    serialized_name = "Internal ID of Subject")
     
   active = BooleanType(default=True)  # so commenter or admin can soft-delete messages

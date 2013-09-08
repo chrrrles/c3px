@@ -1,3 +1,0 @@
-{% for rfp in rfp_items %}
-  
-{% end %}

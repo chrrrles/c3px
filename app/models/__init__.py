@@ -16,10 +16,7 @@
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
 from file import FileModel
-from rfp import RfpModel
-from buyer import BuyerModel
-from bidder import BidderModel 
-from bid import BidModel
+from project import ProjectModel
 from user import UserModel
 from address import AddressModel
 from billing_details import BillingDetailsModel

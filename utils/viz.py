@@ -15,11 +15,12 @@ def load_stl(file_path):
     bpy.ops.object.select_all(action='DESELECT')
     ob.select = True
     # remove doubles and clean
-    #py.ops.object.editmode_toggle()
-    #bpy.ops.mesh.select_all(action='TOGGLE')
-    #bpy.ops.mesh.remove_doubles(limit=0.0001)
-    #bpy.ops.mesh.normals_make_consistent(inside=False)
-    #bpy.ops.object.editmode_toggle()
+    # bpy.ops.object.editmode_toggle()
+    # bpy.ops.mesh.select_all(action='TOGGLE')
+    # bpy.ops.mesh.remove_doubles(threshold=0.0001)
+    # bpy.ops.mesh.normals_make_consistent(inside=False)
+    # bpy.ops.object.editmode_toggle()
+
     bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN', center='BOUNDS')
     # place
     z_dim = ob.dimensions[2]

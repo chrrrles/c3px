@@ -15,10 +15,14 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from schematics.models import Model
-from schematics.types import StringType, EmailType, DateTimeType, BooleanType
+from base import *
 
-class UserModel(Model):
+class UserModel(BaseModel):
+  username = StringType (
+    default = '',
+    serialized_name = "Username",
+    max_length = 40 )
+
   firstname = StringType ( 
     default = '',
     serialized_name = "First Name",

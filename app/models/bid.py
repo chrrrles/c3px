@@ -20,7 +20,7 @@ from schematics.types import StringType, FloatType, DateTimeType, DecimalType
 from schematics.types.compound import ListType, ModelType
 from bidder import BidderModel
 from comment import CommentModel
-from rfp import RfpModel
+from project import ProjectModel
 
 class BidModel(Model):
   bidder = ModelType(
@@ -28,9 +28,9 @@ class BidModel(Model):
     serialized_name="Bidder",
     required=True )
 
-  rfp = ModelType(
-    RfpModel,
-    serialized_name="RFP",
+  project = ModelType(
+    ProjectModel,
+    serialized_name="Project",
     required=True )
 
   cost_build = DecimalType( 

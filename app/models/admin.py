@@ -15,13 +15,11 @@
 # You should have received a copy of the GNU Affero General Public 
 # License along with C3PX.  If not, see <http://www.gnu.org/licenses/>.
 
-from schematics.models import Model
-from schematics.types.compound import ModelType
-
+from base import *
 from address import AddressModel
 from user import UserModel
 
-class AdminModel(Model):
+class AdminModel(BaseModel):
   user = ModelType(
     UserModel,
     required=True,

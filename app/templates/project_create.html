@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% import wtforms %}
+
+{% block title %}| Create a Project {% end %}
+
+{% block jumbotron %}
+<header class="jumbotron subhead" >
+  <div class="container">
+    <h1>Create a Project</h1>
+    <p>Upload your STL Files and Request Bids from Printers</p>
+  </div>
+</header>
+{% end %}
+
+{% block content %}
+
+<div class="alert alert-error hidden" id="alert"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="span8 offset2">
+      <form class="form-horizontal" action="{% raw request.uri %}" method="POST" id="project_form">
+        <h3>Project Description</h3>
+
+        {% module ProjectFormModule(project) %}
+
+        <h3>Select & Upload Files</h3>
+    
+        {% module StlUploadModule(uploads) %}
+
+        <button type="submit" id="submit" class="btn btn-block btn-success"> {{ _("Next") }}  <i class="icon-arrow-right"></i></button>
+      </form>
+    </div>
+  </div>
+</div>
+{% end %}
+
+
+
+
