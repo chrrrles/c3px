@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}| {{project['name']}} by {{project['owner']['username']}} {% end %}
+{% block jumbotron %}
+<div class="jumbotron subhead">
+  <div class="container">
+    <h3>{{project['name']}} by {{project['owner']['username']}}</h3>
+    <p>{{project['description']}}</p>
+  </div>
+</div>
+{% end %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="span8 offset2">
+      <ul class="thumbnails" id="upload_thumbnails">
+      {% for asset in project['assets'] %}
+        {% set src = '/stl' if asset['filename'].split('.')[-1].lower() == 'stl' else '' %}
+        <li class="span2">
+          <div class="thumbnail">
+            <a href="/asset/{{asset['public_id']}}">
+              <img class="img-rounded" src="/asset/{{asset['public_id']}}/thumbnail" />
+            </a>
+            <div class="caption">
+              <h4>{{asset['filename']}}</h4>
+              <p>size: {{helpers.humanize_bytes(asset['size'])}}</p>
+              <p><a href="/asset/{{asset['public_id']+src}}">Download</a></p>
+            </div>
+          </div>
+        </li>
+      {% end %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% end %}
+
+
+

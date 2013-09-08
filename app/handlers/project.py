@@ -24,44 +24,81 @@ class BrowseProjectHandler(AppHandler):
 
 class ViewProjectHandler(AppHandler):
 
-  def get(self, owner, project_name):
-    self.render('project_browse.html')
+  @tornado.web.asynchronous
+  @tornado.gen.coroutine
+  def get(self, username, name):
+    user = yield self.db.users.find_one(
+      {'username' : url_unescape(username)})
+
+    if user:
+      project = yield self.db.projects.find_one(
+        {'$and':[
+          {'owner': user['email']},
+          {'name' : url_unescape(name)} ]})
+
+      if project:
+
+        if not project['public'] and not self.current_user:
+          self.redirect(self.get_login_url() + '?' + 
+            urllib.urlescape({'_next': self.request.uri}))
+          return
+
+        project['owner'] = user # stash owner info 
+        cr = self.db.files.find(
+          {'public_id':  {'$in': project['uploads']}},
+          fields=['filename','size','public_id'])
+        cnt = yield cr.count()
+        project['assets'] = []
+        while (yield cr.fetch_next):
+          asset = cr.next_object()
+          asset['public_id'] = str(asset['public_id'])
+          project['assets'].append(asset)
+        self.render('project_view.html', project=project)
+
+    raise tornado.web.HTTPError(404)
+         
+
+class ViewUserProjectHandler(AppHandler):
+
+  def get(self, user):
+    self.render('project_user.html')
 
 class UpdateProjectHandler(AppHandler):
 
-  #@auth_only
+  @auth_only
   @tornado.web.asynchronous
   @tornado.gen.engine
-  def get(self, owner=None, project_name=None):
+  def get(self, project_name=None):
     Project = ProjectModel()
     uploads = []
-    if _id is not None:
+    if project_name is not None:
       project = yield Op(self.db.projects.find_one,
-        {'$and': 
-          {'_id': _id, 
-          #'owner': self.current_user.email}} )
-          'owner': "charles.paul@gmail.com"}} )
+        {'$and': [
+          {'name': url_unescape(project_name)}, 
+          {'owner': self.current_user['email']}]} )
       if project is not None:
         Project = ProjectModel(project)
-        uploads = project.uploads
+        print Project._data
+        uploads = project['uploads']
+        uploads = [str(x) for x in uploads]
 
     project_form = model_form(Project)
     self.render('project_create.html', project = project_form(), uploads=uploads )
 
-  #@auth_only
+  @auth_only
   @tornado.web.asynchronous
   @tornado.gen.coroutine
-  def post(self, owner=None, project_name=None):
-    _id = self.get_argument('_id', False) 
+  def post(self, project_name=None):
     errors = {}
-    if _id:
-      project = yield self.db.projects.find_one(
-        {'$and': 
-          {'_id': _id, 
-          #'owner': self.current_user['email']}} )
-          'owner': "charles.paul@gmail.com"}} )
+
+    # we are editing an existing project
+    if project_name is not None:
+      project = yield self.db.projects.find_one({
+        '$and': [
+          {'name': url_unescape(project_name)}, 
+          {'owner': self.current_user['email']} ] } )
       if not project:
-        # sneaky monkey, you shouldn't get this
+        # cheeky monkey, you shouldn't get this
         raise tornado.web.HTTPError(404)
 
     args = self._args
@@ -77,46 +114,45 @@ class UpdateProjectHandler(AppHandler):
     # check to see if owner alread has project with name
     exists = yield self.db.projects.find_one({
       '$and': [
-        #{'owner': self.current_user['email']},
-        {'owner': "charles.paul@gmail.com"},
+        {'owner': self.current_user['email']},
         {'name' : Project.name } ]})
+
     if exists is not None:
       errors['name'] = "Project name already used" 
 
+    # we check for uploads w/ javascript, but can't trust dem users
     if len(uploads) > 0 and len(errors) == 0:
-      cursor =  self.db.files.find(
+      cr =  self.db.files.find(
         {'$and': [
           {'public_id':  {'$in': uploads}},
-          #{'owner': self.current_user['email']} ] },
-          {'owner': "charles.paul@gmail.com"} ] },
+          {'owner': self.current_user['email']} ] },
         fields=['filename']) 
-      count = yield  cursor.count()
-      files = yield cursor.to_list(count)
+      cnt = yield  cr.count()
+      files = yield cr.to_list(count)
 
       stl = False
       for f in files:
         if f['filename'].split('.')[1].lower() == 'stl':
           stl = True # if at least 1 file is STL, proceed
 
+      # we have an STL file, we can proceed
       if stl:
         try:
-          Project.owner = "charles.paul@gmail.com"
+          Project.owner = self.current_user['email']
           Project.timestamp = datetime.datetime.now()
           Project.validate()
         except ValidationError,e:
           print e
         else:
-          #Project.owner = self.current_user['email']
           # [XXX] Need to fix ormwtf's ListType conversion to
           # avoid doing this 
           project_with_uploads = {'uploads': uploads} 
           project_with_uploads.update(Project._data)
-          if not _id: 
+          if not project_name: # we are not updating a record 
             project_with_uploads.pop('_id') 
           yield self.db.projects.save( project_with_uploads)
           self.redirect('/user/%s/%s' %  (
-            #urlescape(self.current_user.username), 
-            url_escape("chrrrles"), 
+            urlescape(self.current_user.username), 
             url_escape(project_with_uploads['name'])))
           return
 

@@ -1134,3 +1134,9 @@ form.bs-docs-example {
     padding-bottom: 20px;
   }
 }
+
+/* c3px specific */
+.jumbotron .thumbnails .thumbnail > img {
+  width: 100px;
+  height: 100px;
+}
