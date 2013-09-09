@@ -32,7 +32,7 @@ class RegisterHandler(AppHandler):
     user = UserModel(self._args)
     try:
       user.validate()
-      email_user = yield Op (self.db.users.find_one,{'email': user.email})
+      email_user = yield Op (self.db.users.find_one, {'email': user.email})
       if email_user:
         raise ValidationError('email_exists')
     except ValidationError, e: 
@@ -82,7 +82,7 @@ class LoginHandler(AppHandler):
     message = None
     luser = UserModel(self._args)  # the 'login' user
     _next = self.get_argument('_next', '/')
-    user = yield Op( self.db.users.find_one, {'email': luser.email})
+    user = yield self.db.users.find_one( {'email': luser.email})
     if user:
       if user['activated']:
         hashpw = bcrypt.hashpw(luser.password, user['password'])
