@@ -37,25 +37,26 @@ class ViewProjectHandler(AppHandler):
           {'name' : url_unescape(name)} ]})
 
       if project:
-
-        if not project['public'] and not self.current_user:
-          self.redirect(self.get_login_url() + '?' + 
-            urllib.urlescape({'_next': self.request.uri}))
-          return
+        if not project['public']:
+          if not self.current_user:
+            self.redirect(self.get_login_url() + '?' + 
+              urllib.urlescape({'_next': self.request.uri}))
+            return
 
         project['owner'] = user # stash owner info 
         cr = self.db.files.find(
           {'public_id':  {'$in': project['uploads']}},
           fields=['filename','size','public_id'])
-        cnt = yield cr.count()
         project['assets'] = []
         while (yield cr.fetch_next):
           asset = cr.next_object()
           asset['public_id'] = str(asset['public_id'])
           project['assets'].append(asset)
         self.render('project_view.html', project=project)
+        return
 
-    raise tornado.web.HTTPError(404)
+    #raise tornado.web.HTTPError(404)
+    self.redirect('/')
          
 
 class ViewUserProjectHandler(AppHandler):
@@ -67,13 +68,13 @@ class UpdateProjectHandler(AppHandler):
 
   @auth_only
   @tornado.web.asynchronous
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   def get(self, project_name=None):
     Project = ProjectModel()
     uploads = []
     if project_name is not None:
-      project = yield Op(self.db.projects.find_one,
-        {'$and': [
+      project = self.db.projects.find_one( {
+        '$and': [
           {'name': url_unescape(project_name)}, 
           {'owner': self.current_user['email']}]} )
       if project is not None:
@@ -105,20 +106,26 @@ class UpdateProjectHandler(AppHandler):
     # schematics only recognizes True False  
     args['public'] = True if args['public'] == 'y' else False
     Project = ProjectModel(args)
+
+    # We don't let user's change project names 
+    if project_name is not None:
+      Project.name = project_name 
     uploads = self.request.arguments['uploads[]']
 
-    if not isinstance(uploads, list):  # has to be a list or mongo pukes
+    # has to be a list or mongo pukes
+    if not isinstance(uploads, list):  
       uploads = [uploads,]
     uploads = [uuid.UUID(x) for x in uploads]
 
     # check to see if owner alread has project with name
-    exists = yield self.db.projects.find_one({
-      '$and': [
-        {'owner': self.current_user['email']},
-        {'name' : Project.name } ]})
+    if project_name is None:
+      exists = yield self.db.projects.find_one({
+        '$and': [
+          {'owner': self.current_user['email']},
+          {'name' : Project.name } ]})
 
-    if exists is not None:
-      errors['name'] = "Project name already used" 
+      if exists:
+        errors['name'] = "Project name already used" 
 
     # we check for uploads w/ javascript, but can't trust dem users
     if len(uploads) > 0 and len(errors) == 0:
@@ -128,7 +135,7 @@ class UpdateProjectHandler(AppHandler):
           {'owner': self.current_user['email']} ] },
         fields=['filename']) 
       cnt = yield  cr.count()
-      files = yield cr.to_list(count)
+      files = yield cr.to_list(cnt)
 
       stl = False
       for f in files:
@@ -152,7 +159,7 @@ class UpdateProjectHandler(AppHandler):
             project_with_uploads.pop('_id') 
           yield self.db.projects.save( project_with_uploads)
           self.redirect('/user/%s/%s' %  (
-            urlescape(self.current_user.username), 
+            url_escape(self.current_user['username']), 
             url_escape(project_with_uploads['name'])))
           return
 

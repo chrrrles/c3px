@@ -46,11 +46,10 @@ from rq import Queue
 # Wrapper functions for authentication
 def auth_only(f):
   @functools.wraps(f)
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   def wrapper(self, *args, **kwargs):
     self._auto_finish = False
-    self.current_user = yield tornado.gen.Task(
-      self.get_current_user_async)
+    self.current_user = yield self.get_current_user_async()
 
     if not self.current_user:
       self.redirect(self.get_login_url() + '?' + 
@@ -60,12 +59,11 @@ def auth_only(f):
   return wrapper
           
 def auth_redir(f):
-
   @functools.wraps(f)
-  @tornado.gen.engine
+  @tornado.gen.couroutine
   def wrapper(self, *args, **kwargs):
     self._auto_finish = False
-    self.current_user = yield tornado.gen.Task(self.get_current_user_async)
+    self.current_user = yield self.get_current_user_async()
     if self.current_user:
       self.redirect('/')
     else:
@@ -99,7 +97,7 @@ def vivify(source):
       exec (s)
     else:
       dest[k] = source[k]
-  return dest
+  return dict(dest)
 
 class AppHandler(RequestHandler):
   current_user = None
@@ -117,13 +115,14 @@ class AppHandler(RequestHandler):
   def smtp(self):
     return self.settings['smtp']
 
-  @tornado.gen.engine
-  def get_current_user_async(self, callback):
+  @tornado.gen.coroutine
+  def get_current_user_async(self):
     email = self.get_secure_cookie("current_user") or False
     if not email:
-      callback(None)
+      tornado.gen.Return(None)
     else:
-      callback((yield Op(self.db.users.find_one,{"email": email})))
+      user = self.db.users.find_one({"email": email})
+      tornado.gen.Return(user)
 
   def get_template_namespace(self):
     namespace = super(AppHandler, self).get_template_namespace()
@@ -139,12 +138,12 @@ class AppHandler(RequestHandler):
     #return vivify(a)
     return a
 
-  @tornado.gen.engine
+  @tornado.gen.coroutine
   @tornado.web.asynchronous
   def render(self, template_name,**kwargs):
+    current_user = yield self.get_current_user_async()
     kwargs.update({
-      'current_user':
-        (yield tornado.gen.Task(self.get_current_user_async)),
+      'current_user': current_user,
       'url_path': helpers.Url(self.request.uri).path,
     })
     super(AppHandler, self).render(template_name, **kwargs)
