@@ -31,7 +31,7 @@ class AssetHandler(AppHandler):
     elif ftype == "stl":
       prefix = "stl_"
       
-    asset = yield Op (self.db.files.find_one, {
+    asset = yield self.db.files.find_one( {
       'public_id' : uuid.UUID(public_id) } )
     if asset:
       if ftype == "info":
@@ -126,12 +126,12 @@ class AssetHandler(AppHandler):
   @tornado.web.asynchronous
   @tornado.gen.coroutine
   def delete(self, public_id):
-    asset = yield Op (self.db.files.find_one, {
+    asset = yield self.db.files.find_one( {
       'public_id' : uuid.UUID(public_id) } )
     if asset:
       #if asset['owner'] == self.current_user['email']:
       if asset['owner'] == "charles.paul@gmail.com":
-        model_delete = yield Op (self.db.files.remove, asset['_id'])
+        model_delete = yield self.db.files.remove( asset['_id'])
 
         if model_delete:
           self.set_status(204)  # non-authoritative response

@@ -41,7 +41,6 @@ class ViewProjectHandler(AppHandler):
           if not self.current_user:
             self.redirect(self.get_login_url() + '?' + 
               urllib.urlescape({'_next': self.request.uri}))
-            return
 
         project['owner'] = user # stash owner info 
         cr = self.db.files.find(
@@ -53,8 +52,8 @@ class ViewProjectHandler(AppHandler):
           asset['public_id'] = str(asset['public_id'])
           project['assets'].append(asset)
         self.render('project_view.html', project=project)
-        return
-
+        return 
+        
     #raise tornado.web.HTTPError(404)
     self.redirect('/')
          
@@ -70,21 +69,22 @@ class UpdateProjectHandler(AppHandler):
   @tornado.web.asynchronous
   @tornado.gen.coroutine
   def get(self, project_name=None):
-    Project = ProjectModel()
-    uploads = []
     if project_name is not None:
-      project = self.db.projects.find_one( {
+      project = yield self.db.projects.find_one( {
         '$and': [
           {'name': url_unescape(project_name)}, 
           {'owner': self.current_user['email']}]} )
       if project is not None:
         Project = ProjectModel(project)
-        print Project._data
         uploads = project['uploads']
         uploads = [str(x) for x in uploads]
+    else:
+      Project = ProjectModel()
+      uploads = []
 
     project_form = model_form(Project)
     self.render('project_create.html', project = project_form(), uploads=uploads )
+    return
 
   @auth_only
   @tornado.web.asynchronous
@@ -101,6 +101,9 @@ class UpdateProjectHandler(AppHandler):
       if not project:
         # cheeky monkey, you shouldn't get this
         raise tornado.web.HTTPError(404)
+
+    if url_escape(project_name) in self.reserved_names:
+      errors['name'] = "Name is reserved and cannot be used"
 
     args = self._args
     # schematics only recognizes True False  
