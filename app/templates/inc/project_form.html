@@ -1,0 +1,34 @@
+<fieldset class="well">
+  <div class="control-group {% if project.name.errors %}error {%end%}">
+    {% raw project.name.label(class_="control-label") %}
+    <div class="controls">
+      {% raw project.name(placeholder=project.name.label.text) %}
+      {% if project.name.errors %}<span class="help-inline">{% raw project.name.errors[0] %}</span> {% end %}
+    </div>
+  </div>
+
+  <div class="control-group {% if project.description.errors %}error {%end%}">
+    {% raw project.description.label(class_="control-label") %}
+    <div class="controls">
+      {% raw project.description(placeholder=project.description.label.text) %}
+      {% if project.description.errors %}<span class="help-inline">{% raw project.description.errors[0] %}</span> {% end %}
+    </div>
+  </div>
+
+  <div class="control-group {% if project.public.errors %}error {%end%}">
+    {% raw project.public.label(class_="control-label") %}
+    <div class="controls">
+      {% raw project.public(placeholder=project.public.label.text) %}
+      {% if project.public.errors %}<span class="help-inline">{% raw project.public.errors[0] %}</span> {% end %}
+    </div>
+  </div>
+
+  <div class="control-group {% if project.delivery_time.errors %}error {%end%}">
+    {% raw project.delivery_time.label(class_="control-label") %}
+    <div class="controls">
+      {% raw project.delivery_time(placeholder=project.delivery_time.label.text) %}
+      {% if project.delivery_time.errors %}<span class="help-inline">{% raw project.delivery_time.errors[0] %}</span> {% end %}
+    </div>
+  </div>
+
+</fieldset>
