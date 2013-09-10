@@ -29,9 +29,6 @@ import tornado.gen
 from tornado.options import options
 from tornado.escape import url_escape, url_unescape, xhtml_escape, xhtml_unescape
 
-from motor import Op
-from motor import MotorGridFS
-
 from schematics.exceptions import ValidationError
 from  .. lib.ormwtf import model_form
 from .. import helpers
@@ -60,7 +57,7 @@ def auth_only(f):
           
 def auth_redir(f):
   @functools.wraps(f)
-  @tornado.gen.couroutine
+  @tornado.gen.coroutine
   def wrapper(self, *args, **kwargs):
     self._auto_finish = False
     self.current_user = yield self.get_current_user_async()
@@ -70,9 +67,6 @@ def auth_redir(f):
       f(self, *args, **kwargs)
   return wrapper
 
-# ugly, I know
-class Data:
-  pass
 
 # from http://stackoverflow.com/questions/635483/what-is-the-best-way-to-implement-nested-dictionaries-in-python/652284#652284
 class AutoVivification(dict):
@@ -102,6 +96,11 @@ def vivify(source):
 class AppHandler(RequestHandler):
   current_user = None
 
+  @property
+  def reserved_names(self):
+    reserved_names = ['new', 'create', 'save', 'update','delete']
+    return reserved_names
+
   # Redis Queue... whew!
   @property
   def q(self):
@@ -119,10 +118,10 @@ class AppHandler(RequestHandler):
   def get_current_user_async(self):
     email = self.get_secure_cookie("current_user") or False
     if not email:
-      tornado.gen.Return(None)
+      raise tornado.gen.Return(None)
     else:
-      user = self.db.users.find_one({"email": email})
-      tornado.gen.Return(user)
+      user = yield self.db.users.find_one({"email": email})
+      raise tornado.gen.Return(user)
 
   def get_template_namespace(self):
     namespace = super(AppHandler, self).get_template_namespace()
@@ -147,4 +146,3 @@ class AppHandler(RequestHandler):
       'url_path': helpers.Url(self.request.uri).path,
     })
     super(AppHandler, self).render(template_name, **kwargs)
-       

@@ -23,6 +23,7 @@ from app import *
 class UserProfileHandler(AppHandler):
 
   @auth_only
+  @tornado.web.asynchronous
   def get(self):
     return self.render('user_profile.html')
 
